@@ -1,5 +1,6 @@
 from tkinter import*
 import sqlite3
+import Users1
 
 class Login():
     def __init__(self):
@@ -32,19 +33,12 @@ class Login():
     def login(self):
         username = self.loginName.get()
         password = self.loginPass.get()
-
-        conn = sqlite3.connect('example.db')
-        c = conn.cursor()
-        print(username)
-        print(password)
-        user = (username,)
-        passw = (password,)
-        c.execute('SELECT password FROM t WHERE username= ? ', user)
-        u = c.fetchone()
-
-        if(u == NONE):
+        x1 = Users1.Users()
+        passwordA = x1.getPassword(username)
+        passwordN = (password,)
+        if(username == NONE):
              print("Error no username")
-        if(u == passw):
+        if(passwordA == passwordN):
              self.showLoged()
         else:
              self.sts.set("Wrong Name and Password")
