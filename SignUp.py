@@ -1,6 +1,7 @@
 from tkinter import*
 from tkinter import messagebox
 from datetime import date
+import Users1
 import sqlite3
 
 class SignUp():
@@ -70,17 +71,16 @@ class SignUp():
         Interest2 = self.var2.get()
         Interest3 = self.var3.get()
         joindate = str(date.today())
+        Application = 'GU'
 
-        conn = sqlite3.connect('example.db')
-        c = conn.cursor()
-        t1 = (username,)
+        x1 = Users1.Users()
+        usern = x1.getUsername(username)
+        username1 = (username,)
 
       #  c.execute('''CREATE TABLE t
-       #             (username text NOT NULL PRIMARY KEY, password text, Fname text, Lname text, Interest1 text,
-      #   Interest2 text, Interest3 text, joindate date)''')
+      #              (username text NOT NULL PRIMARY KEY, password text, Fname text, Lname text, Interest1 text,
+      #   Interest2 text, Interest3 text, joindate date, type text)''')
 
-        c.execute('SELECT username FROM t WHERE username= ? ', t1)
-        t2 = c.fetchone()
 
         if(username == "" ):
             messagebox.showwarning("Warning",
@@ -94,20 +94,15 @@ class SignUp():
             messagebox.showwarning("Warning",
                                    "Application needs all items to be completed to be successfully submitted")
 
-        elif (t1 ==t2):
-            #NEED A POP ERROR MSG!! "Username taken please try something else"
-            self.quit()
-
+        elif (username1 == usern):
+            messagebox.showwarning("Warning",
+                                   "Username already taken. Please try another one")
+            self.signinFrame.destroy()
         else:
-            c.execute("INSERT INTO t VALUES (?,?,?,?,?,?,?,?)", (username, password, Fname, Lname, Interest1, Interest2,
-                                                             Interest3, joindate))
-            conn.commit()
-            for row in c.execute('SELECT * FROM t'):
-                print(row)
+            x1 = Users1.Users()
+            userEntry = x1.createUSer(username, password, Fname, Lname, Interest1, Interest2, Interest3, joindate,
+                                      Application)
             self.quit()
-
-    def cancel(self):
-        self.signinFrame.pack_forget()
 
     def quit(self):
         self.root.destroy()
