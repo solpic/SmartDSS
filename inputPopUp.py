@@ -12,17 +12,19 @@ class textPopUp:
 
     # Message is the message you want to prompt the user with
     def __init__(self,message):
-        root = Toplevel()
-        root.title="test"
-        self.prompt = Label(root,text=message)
+        self.root = Toplevel()
+        self.root.title="test"
+        self.prompt = Label(self.root,text=message)
         self.prompt.pack()
-        self.userInput = Entry(root)
+        self.userInput = Entry(self.root)
         self.userInput.pack()
-        self.enterButton = Button(root,text="Submit", command=self.inputData)
+        self.enterButton = Button(self.root,text="Submit", command=self.inputData)
         self.enterButton.pack()
 
     # Should Update DB with user input
     def inputData(self):
         tabooWord = self.userInput.get()
-        # TODO: Server Call
+        # TODO: add Taboo Word to DB
+        # print("inputData Method Body")
+        self.root.destroy()
     

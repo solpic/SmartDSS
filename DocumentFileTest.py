@@ -17,7 +17,8 @@ class DocumentScreen:
         TextPlaceHolder="PLACEHOLDER"
 
         root= Tk()
-        root.title(self.currentDoc.getTitle() +" || "+ self.currentUser.getUserName())
+        #root.title(self.currentDoc.getTitle() +" || "+ self.currentUser.getUserName())
+        root.title("Document Screen")
         root.geometry(str(DocHeight)+"x"+str(DocHeight))
         
         # --Menu Set Up -------------------------------------------------------------------------
@@ -51,23 +52,33 @@ class DocumentScreen:
         # allMembersMenu.add_command(label="xyz")
         for member in self.currentDoc.getMembers():
             allMembersMenu.add_command(label=member.getUserName())
-            # TODO: TEST with Document Object
 
         membOptMenu.add_cascade(label="View All Members", menu=allMembersMenu)
         mainMenu.add_cascade(label="Membership Option",menu=membOptMenu)
         # Taboo Word Menu
         tabooMenu = Menu(mainMenu)
-    
         tabooWords = {"Word1", "Word2", "Word3"} # PLACEHOLDER, should be obtained from DB TODO: Server Call
         for tWord in tabooWords:
             tabooMenu.add_command(label=tWord)
         tabooMenu.add_command(label="Add Taboo Word", command=self.addTabooWord)# command ~~ addTabooWord
         mainMenu.add_cascade(label="TabooWords", menu=tabooMenu)
 
+        # Document Complaints [ Against Document ] Menu
+        # TODO: Concert this to deal with Complaints from Document Object
+        docComplaintMenu = Menu(mainMenu)
+        complaints = ["0000","0001","0002","0004","0005"]
+        for complaint in complaints:
+            docComplaintMenu.add_command(label=complaint)
+        mainMenu.add_cascade(label="Document Complaints",menu=docComplaintMenu)
+
+
         # TODO: How to get User Rank and make Dynamic Buttons
         # These come from the user who opened this document
         # These can also just be extra fields in the menu
+
+
         # --Dynamic Buttons----------------------------------------------------------------------
+        # Acomplished by Disabling buttons based on user Rank
         if(self.userRank=="SU"):
             print()
         elif(self.userRank=="OU"):
@@ -84,7 +95,7 @@ class DocumentScreen:
         # --Text Fields--------------------------------------------------------------------------
         textArray = [] # Should be an array of TK ENTRY WIDGETS
 
-        numberOfSentances = 10 # PLACE HOLDER VALUES TODO: Populate from Document Object
+        numberOfSentances = self.currentDoc.getNumberOfSentances() # PLACE HOLDER VALUES TODO: Populate from Document Object
 
         TextHeight=40
         yOffSet=0
@@ -92,7 +103,7 @@ class DocumentScreen:
             textArray.append(Entry(root,width=DocWidth))
             textArray[i].place(x=0,y=yOffSet+20*i)
             # textArray[i].config(state="disabled")
-            textArray[i].insert(END,TextPlaceHolder)
+            textArray[i].insert(END,self.currentDoc.sentances[i])
             # the argument of this should be populated best on the line number, and the data should
             # come from the Db
             
