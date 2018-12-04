@@ -18,7 +18,7 @@ class HomePg():
         frame2 = LabelFrame(frame1)
         frame2.grid(row=0, column=0, sticky=W)
         frame3 = Frame(frame1)
-        frame3.grid(row=1, column=0, sticky=W)
+        frame3.grid(row=1, column=0, sticky=W, padx=120)
 
         img = PhotoImage(file = "SmartD.gif")
         l = Label(frame3, image=img)
@@ -26,9 +26,9 @@ class HomePg():
         l.grid(sticky=W)
 
         Label(frame2, text="", height =0, width=100).grid(row=0, column=1)
-        Label(frame2, text= "SmartDSS", font=('Comic Sans MS', 48), fg = "dodgerblue").grid(row=0,column=0)
-        Button(frame2, text="Log in", font=('Comic Sans MS', 25), command = self.login, height=1, width=10).grid(row=0, column=2, sticky=E, padx=10)
-        Button(frame2, text="Get Started",font=('Comic Sans MS', 25), command = self.signup, height=1, width=10).grid(row=0, column=3, sticky=E, padx=10)
+        Label(frame2, text= "SmartDSS", font=('Arial', 48), fg = "dodgerblue").grid(row=0,column=0)
+        Button(frame2, text="Log in", font=('Ariel', 25), command = self.login, height=1, width=10).grid(row=0, column=2, sticky=E, padx=10)
+        Button(frame2, text="Get Started",font=('Arial', 25), command = self.signup, height=1, width=10).grid(row=0, column=3, sticky=E, padx=10)
 
         frame1.pack()
 
