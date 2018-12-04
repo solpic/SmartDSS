@@ -6,3 +6,4 @@ def get_proxy(host):
 # Example
 # proxy = get_proxy('http://localhost:9000')
 # print(proxy.return_square(10)) // prints 100
+# blah
