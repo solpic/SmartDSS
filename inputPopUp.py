@@ -24,5 +24,5 @@ class textPopUp:
     # Should Update DB with user input
     def inputData(self):
         tabooWord = self.userInput.get()
-        # TODO Server Call
+        # TODO: Server Call
     
