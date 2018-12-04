@@ -1,0 +1,41 @@
+HomePg.py
+UserPg.py
+Editor.py
+
+Views:
+Homepage
+Userpage
+Document
+
+Models:
+Document
+	Metadata -> owner, version number, document name, privacy, date, versiondate
+	memberlist
+	Words
+static
+	search documents
+	adding document
+	deleting document
+	taboo words
+	restoring
+methods
+	change privacy
+	lock/unlock
+	
+	push update
+	refresh document
+
+Users
+	username, hashed_password, join date, interests, rank, sessionID
+static
+	apply
+methods
+	login
+	signout	
+	
+Taboo words
+
+Complaints
+
+Controllers:
+	
