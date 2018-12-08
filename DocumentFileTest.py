@@ -2,7 +2,6 @@ from tkinter import *
 import tkinter.simpledialog as tkSimpleDialog 
 import inputPopUp
 '''Document View'''
-# TODO: Document Class
 class DocumentScreen:
     def __init__(self,user,document):
         self.currentUser = user;
@@ -18,13 +17,13 @@ class DocumentScreen:
         
         TextPlaceHolder="PLACEHOLDER"
 
-        root= Tk()
+        self.root= Tk()
         #root.title(self.currentDoc.getTitle() +" || "+ self.currentUser.getUserName())
-        root.title("Document Screen")
-        root.geometry(str(DocHeight)+"x"+str(DocHeight))
+        self.root.title("Document Screen")
+        self.root.geometry(str(DocHeight)+"x"+str(DocHeight))
         
         # --Menu Set Up -------------------------------------------------------------------------
-        mainMenu = Menu(root)
+        mainMenu = Menu(self.root)
         
         # All Following Menus are submenus of the mainMenu object
         # Back Menu
@@ -49,7 +48,8 @@ class DocumentScreen:
         # Membership Options Menu
 
         membOptMenu = Menu(mainMenu)
-        membOptMenu.add_command(label="Update Member(s)")#TODO: Add command=inputpopup
+        membOptMenu.add_command(label="Update Member(s)")
+        #TODO: View all Members [system.getAllMembers] or direct Server call?
         allMembersMenu = Menu(membOptMenu)
         # allMembersMenu.add_command(label="xyz")
         for member in self.currentDoc.getMembers():
@@ -92,36 +92,28 @@ class DocumentScreen:
 
         
         # --Text Fields--------------------------------------------------------------------------
-        textArray = [] # Should be an array of TK ENTRY WIDGETS
+        # TODO: Change to text
 
-        numberOfSentances = self.currentDoc.getNumberOfSentances() # PLACE HOLDER VALUES TODO: Populate from Document Object
-
-        TextHeight=40
-        yOffSet=0
-        for i in range(0, numberOfSentances):
-            textArray.append(Entry(root,width=DocWidth))
-            textArray[i].place(x=0,y=yOffSet+20*i)
-            # textArray[i].config(state="disabled")
-            textArray[i].insert(END,self.currentDoc.sentances[i])
-            # the argument of this should be populated best on the line number, and the data should
-            # come from the Db
-            
-        root.config(menu=mainMenu)    
-        root.mainloop()
+        displayText = self.currentDoc.getWords() # PLACE HOLDER VALUES 
+        # create a Text (widget)
+        textFrame = Frame(self.root,width = DocWidth,height=DocHeight)
+        textFrame.pack(fill="both",expand=True)
+        textFrame.grid_propagate(False)
+        textFrame.grid_rowconfigure(0,weight=1)
+        textFrame.grid_columnconfigure(0,weight=1)
+        self.txt = Text(textFrame, borderwidth=3, relief="sunken",width=200,height=DocHeight)
+        self.txt.config(font=("consolas", 12), undo=True, wrap='word')
+        self.txt.grid(row=0, column=0, sticky="nsew", padx=2, pady=2,)
+        scrollb = Scrollbar(textFrame, command=self.txt.yview)
+        scrollb.grid(row=0, column=2, sticky='nsew')
+        self.txt['yscrollcommand'] = scrollb.set    
+        self.root.config(menu=mainMenu)    
+        self.root.mainloop()
 
     #PostCond: The inputed Word is added to the DB of Taboo Words
     def addTabooWord(self):
         uInput = tkSimpleDialog.askstring("Add Taboo Word","Word?")
-        currentDoc.addTabooWord(uInput)
-        '''
-        popUp = inputPopUp.textPopUp("Enter Taboo Word Suggestion Below")
-        inWord = popUp.inputWord
-        while(inWord==""):
-            inWord=popUp.inputWord
-
-        print("In Add Taboo")
-        #print(popUp.getInputWord())
-        '''
+        #currentDoc.addTabooWord(uInput)
     
     def addDocComplaint(self):
         complaint=tkSimpleDialog.askstring("Enter Complaint against Document")

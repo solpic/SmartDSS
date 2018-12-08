@@ -2,7 +2,7 @@
 
 import DocumentFileTest
 import Users1
-
+import DocumentModel
 
 
 class user:
@@ -13,22 +13,13 @@ class user:
         return self.name
     def getUserName(self):
         return self.name
-class Document:
-    def __init__(self,name,sList):
-        self.name=name
-        self.sentances = sList 
 
-    def getNumberOfSentances(self):
-        return len(self.sentances)
-
-    def getMembers(self):
-        return [guestUser,ordUser,superUser]
 
 tmpSList = ["SentanceOne","SentanceTwo","SentanceThree","SentanceFour","SentanceArif"]
 guestUser = user("GU")
 ordUser = user("OU")
 superUser = user("SU")
-testDoc = Document("Captains Log", tmpSList)
+testDoc = DocumentModel.DocumentModel(guestUser, "MY DOCUMENT NAME","PRIVATE")
 testScreen1 = DocumentFileTest.DocumentScreen(guestUser,testDoc)
 # testScreen2 = DocumentFileTest.DocumentScreen(ordUser,tmpSList)
 # testScreen3 = DocumentFileTest.DocumentScreen(superUser)
