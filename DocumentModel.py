@@ -44,5 +44,8 @@ class DocumentModel():
     def getWords(self):
         return self.words
     # TODO: Update Local Changes with DB Tables
+
+    def getComplaints(self):
+        return self.complaints
     def synchronize(self):
         print()

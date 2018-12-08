@@ -66,9 +66,8 @@ class DocumentScreen:
         mainMenu.add_cascade(label="TabooWords", menu=tabooMenu)
 
         # Document Complaints [ Against Document ] Menu
-        # TODO: Concert this to deal with Complaints from Document Object
         docComplaintMenu = Menu(mainMenu)
-        complaints = ["0000","0001","0002","0004","0005"]
+        complaints = self.currentDoc.getComplaints()
         for complaint in complaints:
             docComplaintMenu.add_command(label=complaint)
         mainMenu.add_cascade(label="Document Complaints",menu=docComplaintMenu)
@@ -92,9 +91,8 @@ class DocumentScreen:
 
         
         # --Text Fields--------------------------------------------------------------------------
-        # TODO: Change to text
 
-        displayText = self.currentDoc.getWords() # PLACE HOLDER VALUES 
+        displayText = self.currentDoc.getWords() 
         # create a Text (widget)
         textFrame = Frame(self.root,width = DocWidth,height=DocHeight)
         textFrame.pack(fill="both",expand=True)
@@ -116,7 +114,7 @@ class DocumentScreen:
         #currentDoc.addTabooWord(uInput)
     
     def addDocComplaint(self):
-        complaint=tkSimpleDialog.askstring("Enter Complaint against Document")
+        complaint=tkSimpleDialog.askstring("Enter Complaint against Document","Complaint:")
         self.currentDoc.addComplaint(complaint)
     def addUserComplaint(self):
         complaint=tkSimpleDialog.askstring("Enter Complain Against User")
