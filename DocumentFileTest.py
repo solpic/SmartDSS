@@ -1,5 +1,7 @@
 from tkinter import *
+import tkinter.simpledialog as tkSimpleDialog 
 import inputPopUp
+'''Document View'''
 # TODO: Document Class
 class DocumentScreen:
     def __init__(self,user,document):
@@ -32,8 +34,8 @@ class DocumentScreen:
 
         # Complain Menu
         complainMenu = Menu(mainMenu)
-        complainMenu.add_command(label="Submit Document Complaint")
-        complainMenu.add_command(label="Submit User Complaint")
+        complainMenu.add_command(label="Submit Document Complaint",command=self.addDocComplaint)
+        complainMenu.add_command(label="Submit User Complaint",command=self.addUserComplaint)
         mainMenu.add_cascade(label="Complaints",menu=complainMenu)
         # complainMenu.entryconfigure("Submit Document Complaint",state="disabled")
 
@@ -72,11 +74,8 @@ class DocumentScreen:
         mainMenu.add_cascade(label="Document Complaints",menu=docComplaintMenu)
 
 
-        # TODO: How to get User Rank and make Dynamic Buttons
-        # These come from the user who opened this document
+        # These come from the user who opened this documentvIEW
         # These can also just be extra fields in the menu
-
-
         # --Dynamic Buttons----------------------------------------------------------------------
         # Acomplished by Disabling buttons based on user Rank
         if(self.userRank=="SU"):
@@ -112,4 +111,21 @@ class DocumentScreen:
 
     #PostCond: The inputed Word is added to the DB of Taboo Words
     def addTabooWord(self):
-        inputPopUp.textPopUp("Enter Taboo Word Suggestion Below")
+        uInput = tkSimpleDialog.askstring("Add Taboo Word","Word?")
+        currentDoc.addTabooWord(uInput)
+        '''
+        popUp = inputPopUp.textPopUp("Enter Taboo Word Suggestion Below")
+        inWord = popUp.inputWord
+        while(inWord==""):
+            inWord=popUp.inputWord
+
+        print("In Add Taboo")
+        #print(popUp.getInputWord())
+        '''
+    
+    def addDocComplaint(self):
+        complaint=tkSimpleDialog.askstring("Enter Complaint against Document")
+        self.currentDoc.addComplaint(complaint)
+    def addUserComplaint(self):
+        complaint=tkSimpleDialog.askstring("Enter Complain Against User")
+        self.currentUser.addComplaint()

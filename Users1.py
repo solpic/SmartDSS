@@ -42,3 +42,9 @@ class Users():
         user = (self.username,)
         self.c.execute('SELECT password FROM t WHERE username= ? ', user)
         # the SU sets the application type to OU
+
+    # TODO: Requested Features from Arik:
+    def getRank(self):
+        print()
+    #   Pre: Runs on a user instance
+    #   Post: returns the rank of the user instance as a string of "OU" "GU" or "SU"
