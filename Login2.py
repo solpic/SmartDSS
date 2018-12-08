@@ -1,6 +1,8 @@
 from tkinter import*
 import sqlite3
 import Users1
+import UserPg
+import HomePg
 
 class Login():
     def __init__(self):
@@ -39,13 +41,14 @@ class Login():
         if(username == NONE):
              print("Error no username")
         if(passwordA == passwordN):
-             self.showLoged()
+             self.showLoged(username)
         else:
              self.sts.set("Wrong Name and Password")
 
-    def showLoged(self):
+    def showLoged(self, username):
         self.loginFrame.pack_forget()
-        self.logedFrame.pack()
+        self.root.destroy()
+        UserPg.UserPg.main(self, username)
 
     def showLogin(self):
         self.page.set("Log In")
