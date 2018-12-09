@@ -46,6 +46,5 @@ class DocumentModel():
     def getWords(self):
         return self.words
     
-
     def getComplaints(self):
         return self.complaints
