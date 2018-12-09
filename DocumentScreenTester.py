@@ -16,9 +16,11 @@ class user:
 
 
 tmpSList = ["SentanceOne","SentanceTwo","SentanceThree","SentanceFour","SentanceArif"]
+
 guestUser = user("GU")
 ordUser = user("OU")
 superUser = user("SU")
+
 testDoc = DocumentModel.DocumentModel(guestUser, "MY DOCUMENT NAME","PRIVATE")
 testScreen1 = DocumentFileTest.DocumentScreen(guestUser,testDoc)
 # testScreen2 = DocumentFileTest.DocumentScreen(ordUser,tmpSList)

@@ -1,5 +1,5 @@
 import datetime
-
+import Complaint
 #TODO: Add Server Update code as well
 
 class DocumentModel():
@@ -17,8 +17,8 @@ class DocumentModel():
         self.deltaLog = []
         self.complaints = []
         
-    # TODO: How does this work?/ What does it do?
     def genVersionNumber(self):
+    # TODO: How does this work?/ What does it do?
         return 5
     def lockDocument(self):
         self.locked=True
@@ -33,8 +33,10 @@ class DocumentModel():
             if (self.memberList[i].getUserName()==targetUName):
                 del member[i]
     
-    def addComplaint(self, complaint):
-        self.complaints.append(complaint)
+    def addComplaint(self, complaint,currUser):
+        complaintObj = Complaint.Complaint(complaint,currUser)
+        self.complaints.append(complaintObj)
+        # FIXME: Server Call to also add complaint to Document Table?
 
     def getMembers(self):
         return self.memberList
@@ -43,9 +45,7 @@ class DocumentModel():
         return # a list of all registered members in DB, should be a Server Querey
     def getWords(self):
         return self.words
-    # TODO: Update Local Changes with DB Tables
+    
 
     def getComplaints(self):
         return self.complaints
-    def synchronize(self):
-        print()

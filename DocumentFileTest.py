@@ -1,6 +1,6 @@
 from tkinter import *
 import tkinter.simpledialog as tkSimpleDialog 
-import inputPopUp
+import TabooWords
 '''Document View'''
 class DocumentScreen:
     def __init__(self,user,document):
@@ -49,7 +49,7 @@ class DocumentScreen:
 
         membOptMenu = Menu(mainMenu)
         membOptMenu.add_command(label="Update Member(s)")
-        #TODO: View all Members [system.getAllMembers] or direct Server call?
+        # TODO: View all Members : Server Call
         allMembersMenu = Menu(membOptMenu)
         # allMembersMenu.add_command(label="xyz")
         for member in self.currentDoc.getMembers():
@@ -57,11 +57,13 @@ class DocumentScreen:
 
         membOptMenu.add_cascade(label="View All Members", menu=allMembersMenu)
         mainMenu.add_cascade(label="Membership Option",menu=membOptMenu)
+
         # Taboo Word Menu
         tabooMenu = Menu(mainMenu)
-        tabooWords = {"Word1", "Word2", "Word3"} # PLACEHOLDER, should be obtained from DB TODO: Server Call
+        tabooWords = TabooWords.TabooWords.getAllTaboo() 
         for tWord in tabooWords:
             tabooMenu.add_command(label=tWord)
+        tabooMenu.add_separator()
         tabooMenu.add_command(label="Add Taboo Word", command=self.addTabooWord)# command ~~ addTabooWord
         mainMenu.add_cascade(label="TabooWords", menu=tabooMenu)
 
@@ -77,6 +79,7 @@ class DocumentScreen:
         # These can also just be extra fields in the menu
         # --Dynamic Buttons----------------------------------------------------------------------
         # Acomplished by Disabling buttons based on user Rank
+        # TODO: Check if anymore must be added
         if(self.userRank=="SU"):
             print()
         elif(self.userRank=="OU"):
@@ -115,7 +118,9 @@ class DocumentScreen:
     
     def addDocComplaint(self):
         complaint=tkSimpleDialog.askstring("Enter Complaint against Document","Complaint:")
-        self.currentDoc.addComplaint(complaint)
+        self.currentDoc.addComplaint(complaint,self.currentUser)
     def addUserComplaint(self):
         complaint=tkSimpleDialog.askstring("Enter Complain Against User")
         self.currentUser.addComplaint()
+
+    # TODO: UPDATING SCREEN WITH NEW INFO
