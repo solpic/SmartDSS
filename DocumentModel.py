@@ -1,7 +1,8 @@
 import datetime
 import Complaint
 #TODO: Add Server Update code as well
-
+# Getters are Client Side
+# Setters are Both CLient and Server (Only do Client if Server passed)
 class DocumentModel():
 
     def __init__(self,user,documentName,privLevel):
