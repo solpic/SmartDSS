@@ -3,8 +3,8 @@ import datetime
 #TODO: Add Server Update code as well
 
 class DocumentModel():
-
-    def __init__(self,user,documentName,privLevel):
+        
+    def __init__(self,user=None,documentName=None,privLevel=None):
         self.owner = user
         self.versionNumber = self.genVersionNumber
         self.docName = documentName
