@@ -1,10 +1,10 @@
 import sqlite3
 from DocumentModel import DocumentModel
 from RPCClient import get_proxy
-from Update import Update
 import threading
 import time
 import pickle #serialization stuff
+import DeltaObjects
 
 # DocumentDBServer runs on the server and handles DB stuff
 # DocumentDBClient is called by the client for all getters/setters
@@ -12,7 +12,7 @@ import pickle #serialization stuff
 
 class DocumentDBServer():
     def __init__(self):
-        self.conn = sqlite3.connect('documents.db', isolation_level=None)
+        self.conn = sqlite3.connect('database.db', isolation_level=None)
         self.c = self.conn.cursor()
         self.locks = {}
         
@@ -28,7 +28,7 @@ class DocumentDBServer():
         
         # Document class/model definition
         self.c.execute('''CREATE TABLE documents
-                        (name TEXT, owner INTEGER, contents TEXT,
+                        (name TEXT, owner TEXT, contents TEXT,
                         version INTEGER, privacy TEXT,
                         creation_date REAL,
                         locked INTEGER,
@@ -39,7 +39,7 @@ class DocumentDBServer():
                         (doc_id INTEGER, position INTEGER, length INTEGER, contents TEXT, id INTEGER)''')
                         
         self.c.execute('''CREATE TABLE members
-                        (doc_id INTEGER, member INTEGER)''')
+                        (doc_id INTEGER, member TEXT)''')
         self.conn.commit()
         
     def create_document(self, name, user, contents):
@@ -99,17 +99,16 @@ class DocumentDBServer():
         self.c.execute("SELECT locked FROM documents WHERE name=? AND owner=? AND version=?", (name, user, version, ))
         return self.c.fetchone()[0]
         
-    def push_update(self, update_bin):
-        update = pickle.loads(update_bin.data)
+    def push_update(self, doc_id, location, contents, length):
         # Lock document (in database), not to be confused with the metadata lock
-        lck = self.locks[update.doc_id]
+        lck = self.locks[doc_id]
         lck.acquire()
         success = True
         try:
-            count = self.c.execute("SELECT COUNT(*) FROM updates WHERE doc_id=?", (update.doc_id, )).fetchone()[0]
+            count = self.c.execute("SELECT COUNT(*) FROM updates WHERE doc_id=?", (doc_id, )).fetchone()[0]
             self.c.execute('''INSERT INTO updates (doc_id, position, length, contents, id)
-                                    VALUES (?, ?, ?, ?, ?)''', (update.doc_id, update.position, update.length,\
-                                                                update.contents, count + 1, ))
+                                    VALUES (?, ?, ?, ?, ?)''', (doc_id, location, length,\
+                                                                contents, count + 1, ))
         finally:
             lck.release()
         
@@ -124,27 +123,32 @@ class DocumentDBServer():
         return True
         
     def get_members(self, doc_id):
-        self.c.execute("SELECT member FROM members WHERE doc_id=?", (doc_id,))
+        self.c.execute("SELECT member FROM members WHERE doc_id=? ORDER BY id ASC", (doc_id,))
         res = []
         for row in self.c.fetchall():
             res.append(row[0])
         
         return pickle.dumps(res)
         
-    def make_update(self, row):
-        return Update(row[0], row[1], row[2], row[3], row[4])
+    def get_updates(self, doc_id, last_update):
+        self.c.execute("SELECT * FROM updates WHERE doc_id=? AND id>?", (doc_id, last_update,))
         
-    def get_updates(self, last_update):
-        self.c.execute("SELECT * FROM updates WHERE id>?", (last_update,))
         updates = []
         
         for row in self.c.fetchall():
-            updates.append(self.make_update(row))
-            
+            updates.append(row)
+        
         return pickle.dumps(updates)
         
         
 class DocumentDBClient():
+    def make_update(self, row):
+        if row[3]=="":
+            # Deletion
+            return DeltaObjects.Delete(row[1], row[2])
+        else:
+            return DeltaObjects.Insert(row[1], row[3])
+            
     def get_document(self, name, user, version=0):
         return pickle.loads(get_proxy().get_document(name, user, version).data)
     
@@ -160,31 +164,38 @@ class DocumentDBClient():
     def get_members(self, doc_id):
         return pickle.loads(get_proxy().get_members(doc_id).data)
         
-    def push_update(self, update):
-        return get_proxy().push_update(pickle.dumps(update))
+    def push_insert(self, doc_id, insert):
+        return get_proxy().push_update(doc_id, insert.location, insert.string, 0)
         
-    def get_updates(self, last_update):
-        return pickle.loads(get_proxy().get_updates(last_update).data)
+    def push_delete(self, doc_id, delete):
+        return get_proxy().push_update(doc_id, delete.location, "", delete.length)
+        
+    def get_updates(self, doc_id, last_update):
+        updates = pickle.loads(get_proxy().get_updates(doc_id, last_update).data)
+        ret = []
+        for update in updates:
+            ret.append(self.make_update(update))
+            
+        return ret
         
     def create_document(self, name, user, contents):
         return get_proxy().create_document(name, user, contents)
         
         
-doc_db = DocumentDBServer()
 doc_cli = DocumentDBClient()
         
 def main():
-    #doc_db.create_tables()
-    #doc_cli.create_document("Poopy", 0, "whoopy doop loop")
-    #get_proxy().show_all_documents()
+    #get_proxy().create_tables()
+    doc_cli.create_document("Poopy", "Fred", "Why this")
+    get_proxy().show_all_documents()
+    doc_cli.add_member(1, "Faf")
+    doc_cli.push_insert(1, DeltaObjects.Insert(0, "hello"))
+    doc_cli.push_delete(1, DeltaObjects.Delete(0, 3))
     
-    print(doc_cli.get_members(1))
-    print(doc_cli.add_member(1, 10))
-    print(doc_cli.add_member(1, 20))
-    print(doc_cli.add_member(1, 40))
-    print(doc_cli.remove_member(1, 10))
-    print(doc_cli.get_members(1))
+    updates = doc_cli.get_updates(1, 0)
     
+    for u in updates:
+        u.show()
 
 
 if __name__ == '__main__':

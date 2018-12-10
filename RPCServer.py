@@ -4,14 +4,16 @@ from xmlrpc.server import SimpleXMLRPCServer
 from DocumentDB import *
 import logging
 
-
 # Example function
 def return_square(num):
     return num*num
 
 def register_all_functions(server):
+    #import Users1
+    
     server.register_function(return_square)
-    server.register_instance(doc_db)
+    server.register_instance(DocumentDBServer())
+    #server.register_instance(Users1.Users())
     
     
 # Set up logging
