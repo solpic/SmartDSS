@@ -22,15 +22,14 @@ class HomePg():
         frame3.grid(row=1, column=0, sticky=W, padx=120)
 
         img = PhotoImage(file = "SmartD.gif")
-        l = Label(frame3, image=img)
-        l.image = img
-        l.grid(sticky=W)
+        logo = Label(frame3, image=img)
+        logo.image = img
+        logo.grid(sticky=W)
 
         Label(frame2, text="", height =0, width=100).grid(row=0, column=1)
         Label(frame2, text= "SmartDSS", font=('Arial', 48), fg = "medium blue").grid(row=0,column=0)
         Button(frame2, text="Log in", font=('Ariel', 30), fg= "medium blue", borderwidth = 0,  command = self.login, height=1, width=10).grid(row=0, column=2, sticky=E, padx=10)
         Button(frame2, text="Get Started",font=('Arial', 30), fg= "medium blue", borderwidth = 0, command = self.signup, height=1, width=10).grid(row=0, column=3, sticky=E, padx=10)
-
         frame1.pack()
 
 
