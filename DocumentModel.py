@@ -1,5 +1,6 @@
 import datetime
 import Complaint
+
 #TODO: Add Server Update code as well
 # Getters are Client Side
 # Setters are Both CLient and Server (Only do Client if Server passed)
@@ -17,8 +18,12 @@ class DocumentModel():
         self.locked = False
         self.deltaLog = []
         self.complaints = []
-      
-
+        
+    def show(self):
+        print("Name:"+self.docName)
+        print(self.locked)
+        print(self.contents)
+        
     def genVersionNumber(self):
     # TODO: How does this work?/ What does it do?
         return 5
