@@ -7,7 +7,6 @@ class Insert():
         self.string = s
 
 
-
 class Delete():
 
     def __init__(self,loc,l):

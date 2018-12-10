@@ -2,6 +2,7 @@ from tkinter import *
 import tkinter.simpledialog as tkSimpleDialog 
 import TabooWords
 '''Document View'''
+#TODO: Real User Class Integration
 class DocumentScreen:
     def __init__(self,user,document):
         self.currentUser = user;
@@ -42,8 +43,8 @@ class DocumentScreen:
         # Document Options Menu
         optMenu = Menu(mainMenu)
         optMenu.add_command(label="View Past Versions")#command = ???? Something to view previous docs
-        optMenu.add_command(label="Lock Document")#command = lockDocument 
-        optMenu.add_command(label="Unlock Document")#command = unLockDocument
+        optMenu.add_command(label="Lock Document",command=self.lockDocument)#command = lockDocument 
+        optMenu.add_command(label="Unlock Document",command=self.unlockDocument)#command = unLockDocument
         mainMenu.add_cascade(label="Document Options", menu=optMenu)
         
         # Membership Options Menu
@@ -73,12 +74,17 @@ class DocumentScreen:
         complaints = self.currentDoc.getComplaints()
         for complaint in complaints:
             docComplaintMenu.add_command(label=complaint)
-        mainMenu.add_cascade(label="Document Complaints",menu=docComplaintMenu)
+        mainMenu.add_cascade(label="View Document Complaints",menu=docComplaintMenu)
+
+        # Submit Menu
+        submitMenu = Menu(mainMenu)
+        submitMenu.add_command(label="Submit Changes",command= self.submitChanges)
+        mainMenu.add_cascade(label="Submit",menu=submitMenu)
 
 
+        # --Dynamic Buttons----------------------------------------------------------------------
         # These come from the user who opened this documentvIEW
         # These can also just be extra fields in the menu
-        # --Dynamic Buttons----------------------------------------------------------------------
         # Acomplished by Disabling buttons based on user Rank
         # TODO: Check if anymore must be added
         if(self.userRank=="SU"):
@@ -116,7 +122,15 @@ class DocumentScreen:
     def addTabooWord(self):
         uInput = tkSimpleDialog.askstring("Add Taboo Word","Word?")
         #currentDoc.addTabooWord(uInput)
-    
+    #TODO: Changing other GUI elements as well when its locked
+    #  - submit button
+    #  - adding member button
+    def lockDocument(self):
+        self.txt.config(state="disabled")
+        self.currentDoc.lockDocument()
+    def unlockDocument(self):
+        self.txt.config(state="normal")
+        self.currentDoc.unlockDocument()
     def addDocComplaint(self):
         complaint=tkSimpleDialog.askstring("Enter Complaint against Document","Complaint:")
         self.currentDoc.addComplaint(complaint,self.currentUser)
@@ -124,4 +138,10 @@ class DocumentScreen:
         complaint=tkSimpleDialog.askstring("Enter Complain Against User")
         self.currentUser.addComplaint()
 
+    def submitChanges(self):
+        old = self.currentDoc.getWords()
+        new = self.txt.get("1.0",'end-1c')
+        self.currentDoc.generateDeltas(old,new)
+        self.currentDoc.words= new
+        print("Old {} | New {} |Doc.words {}".format(old,new,self.currentDoc.words))
     # TODO: UPDATING SCREEN WITH NEW INFO

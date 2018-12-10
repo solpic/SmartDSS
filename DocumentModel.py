@@ -1,5 +1,6 @@
 import datetime
 import Complaint
+import DeltaObjects
 
 #TODO: Add Server Update code as well
 # Getters are Client Side
@@ -48,8 +49,7 @@ class DocumentModel():
     def getMembers(self):
         return self.memberList
     def getAllMembers(self):
-        #TODO:
-        return # a list of all registered members in DB, should be a Server Querey
+        return self.memberList 
     def getWords(self):
         return self.words
     
@@ -59,5 +59,60 @@ class DocumentModel():
     def generateDeltas(self,old,new):
         #old is the old document words
         #new is the current docment words
+        tmpDeltaLog = []
+        oldLength = len(old)
+        newLength = len(new)
+        terminate = 0
+        if(oldLength<newLength):
+            terminate = oldLength
+        else:
+            terminate = newLength
+            #Also takes care of if oldLength == newLength
         
-        print()
+        diffString="" #Difference in string so far
+        diffTable=[""] # Table of Diff Strings 
+        dTableIndex = 0 
+        stillChanging = True
+        travelLength = 0
+        for i in range(0,terminate):
+            #print(diffTable[dTableIndex])
+            if(old[i]!=new[i]): # Constructs diffString
+                diffTable[dTableIndex] = diffTable[dTableIndex] + new[i]
+                travelLength = travelLength+ 1
+                stillChanging = True
+            else:
+                stillChanging = False
+            
+            if(i==terminate-1):#At the end you want to grab all changes
+                stillChanging = False
+
+            if stillChanging == False:
+                #location = (i-len(diffTable[dTableIndex]))
+                location = (i-travelLength +1)#i is indicies so its offset from length
+                tmpDeltaLog.append(DeltaObjects.Delete(location,len(diffTable[dTableIndex])))
+                tmpDeltaLog.append(DeltaObjects.Insert(location,diffTable[dTableIndex]))
+                dTableIndex = dTableIndex+1
+                diffTable.append("")
+                travelLength=0
+
+        # i>term behavior
+        if(oldLength!=newLength):
+            if(newLength>oldLength):
+                tmpDeltaLog.append(DeltaObjects.Insert(terminate,new[terminate:]))
+            if(newLength<oldLength):
+                tmpDeltaLog.append(DeltaObjects.Delete(terminate,oldLength-terminate))
+        cleanDeltaLog = [] # Should contain only the meaningful Delta Functions
+        # clean out initial false deltas
+        # insert's string is "" or delete's length is 0
+        for delta in tmpDeltaLog:
+            if(isinstance(delta,DeltaObjects.Delete)):
+                if(delta.length!=0):
+                    cleanDeltaLog.append(delta)
+            if(isinstance(delta,DeltaObjects.Insert)):
+                if(delta.string!=""):
+                    cleanDeltaLog.append(delta)
+
+
+        #deltaLog = cleanDeltaLog
+        self.deltaLog.extend(cleanDeltaLog)
+        
