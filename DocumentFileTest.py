@@ -9,7 +9,8 @@ class DocumentScreen:
         self.currentDoc= document
         # self.docMembers = document.getMembers()
         self.makeScreen()
-        
+
+
     def makeScreen(self):
 
         DocHeight=1024

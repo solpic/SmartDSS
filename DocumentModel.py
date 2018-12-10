@@ -17,7 +17,8 @@ class DocumentModel():
         self.locked = False
         self.deltaLog = []
         self.complaints = []
-        
+      
+
     def genVersionNumber(self):
     # TODO: How does this work?/ What does it do?
         return 5
@@ -37,7 +38,7 @@ class DocumentModel():
     def addComplaint(self, complaint,currUser):
         complaintObj = Complaint.Complaint(complaint,currUser)
         self.complaints.append(complaintObj)
-        # FIXME: Server Call to also add complaint to Document Table?
+        # TODO: Server Call to also add complaint to Document Table.
 
     def getMembers(self):
         return self.memberList
@@ -49,3 +50,9 @@ class DocumentModel():
     
     def getComplaints(self):
         return self.complaints
+
+    def generateDeltas(self,old,new):
+        #old is the old document words
+        #new is the current docment words
+        
+        print()

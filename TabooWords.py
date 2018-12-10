@@ -1,6 +1,6 @@
 
 
-class TabooWords():
+class TabooWords:
 
     allTaboo = []
     def __init__(self,t):

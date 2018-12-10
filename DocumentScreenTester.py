@@ -1,7 +1,6 @@
 '''This is just a test file to test instatiating a DocumentScreen from another file'''
 
 import DocumentFileTest
-import Users1
 import DocumentModel
 
 
