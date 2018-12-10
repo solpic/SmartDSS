@@ -1,6 +1,7 @@
 import datetime
 import Complaint
 import DeltaObjects
+from DocumentDB import doc_cli
 
 #TODO: Add Server Update code as well
 # Getters are Client Side
@@ -19,6 +20,7 @@ class DocumentModel():
         self.locked = False
         self.deltaLog = []
         self.complaints = []
+        self.doc_id=1
         
     def show(self):
         print("Name:"+self.docName)
@@ -116,4 +118,26 @@ class DocumentModel():
 
         #deltaLog = cleanDeltaLog
         self.deltaLog.extend(cleanDeltaLog)
-        
+    
+    def reconstruct(self,num,deltaLog):
+        tmp = 0
+        tmpString = self.words
+        for delta in deltaLog:
+            # Insert
+            if(tmp>num):
+                break
+            if (isinstance(delta,DeltaObjects.Insert)):
+                # string from 0 position + Insert Contents + rest of string
+                backHalf = self.words[0:delta.location]
+                frontHalf = self.words[delta.location:]
+                self.words = backHalf + delta.string + frontHalf
+            if(isinstance(delta,DeltaObjects.Delete)):
+                backHalf = self.words[0:delta.location]
+                frontHalf = self.words[(delta.location+delta.length):]
+                self.words = backHalf+frontHalf
+            tmp= tmp+1
+        print("OLD: {} NEW: {}".format(tmpString,self.words))
+
+                
+
+

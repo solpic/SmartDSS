@@ -1,5 +1,4 @@
 import sqlite3
-from DocumentModel import DocumentModel
 from RPCClient import get_proxy
 import threading
 import time
@@ -71,6 +70,7 @@ class DocumentDBServer():
         return True
         
     def make_document(self, row):
+        from DocumentModel import DocumentModel
         doc = DocumentModel()
         doc.docName = row[0]
         doc.owner = row[1]
