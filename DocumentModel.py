@@ -21,8 +21,9 @@ class DocumentModel():
         
     def show(self):
         print("Name:"+self.docName)
-        print(self.locked)
-        print(self.contents)
+        print("Locked: "+str(self.locked))
+        print("Contents: "+self.contents)
+        print("ID: "+str(self.doc_id))
         
     def genVersionNumber(self):
     # TODO: How does this work?/ What does it do?
