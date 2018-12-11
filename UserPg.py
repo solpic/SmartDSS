@@ -156,7 +156,7 @@ class UserPg():
         init_contents =""
         doc_cli.create_document( doc_name, self.user, init_contents)
         doc_cli.get_document(doc_name, self.user, versionNo)
-        DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
+       # DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
 
     def opendoc(self):
         item = self.searchResultDocs.curselection()
@@ -165,7 +165,7 @@ class UserPg():
         document = docdetail[0]
         usern = docdetail[1]
         versionNo = docdetail[2]
-        DocumentFileTest.DocumentScreen(user(usern), doc_cli.get_document(document, usern, versionNo))
+        #DocumentFileTest.DocumentScreen(user(usern), doc_cli.get_document(document, usern, versionNo))
 
 
     def main(self, username):
