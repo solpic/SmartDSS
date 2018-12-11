@@ -2,9 +2,11 @@
 
 class TabooWords:
 
+# status 0 is proposed, 1 is accepted
     allTaboo = []
-    def __init__(self,t):
+    def __init__(self,t, status=0):
         self.text = t
+        self.status = status
         
     def getTaboo(self):
         return self.text

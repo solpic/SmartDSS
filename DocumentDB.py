@@ -166,9 +166,9 @@ class DocumentDBClient():
     def make_update(self, row):
         if row[3]=="":
             # Deletion
-            return DeltaObjects.Delete(row[1], row[2])
+            return DeltaObjects.Delete(row[1], row[2], row[4])
         else:
-            return DeltaObjects.Insert(row[1], row[3])
+            return DeltaObjects.Insert(row[1], row[3], row[4])
             
     def get_all_documents(self):
         rows = pickle.loads(get_proxy().get_all_documents().data)
@@ -176,6 +176,9 @@ class DocumentDBClient():
         for row in rows:
             docs.append(self.make_document(row))
         return docs
+        
+    def show_all_updates(self):
+        get_proxy().show_all_updates()
         
             
     def get_document(self, name, user, version=0):

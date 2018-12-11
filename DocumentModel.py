@@ -60,6 +60,7 @@ class DocumentModel():
         return self.complaints
 
     def generateDeltas(self,old,new):
+        print("Old: "+old)
         #old is the old document words
         #new is the current docment words
         tmpDeltaLog = []
@@ -118,14 +119,14 @@ class DocumentModel():
 
         #deltaLog = cleanDeltaLog
         self.deltaLog.extend(cleanDeltaLog)
+        
+        return cleanDeltaLog
     
     def reconstruct(self,num,deltaLog):
         tmp = 0
         tmpString = self.words
         for delta in deltaLog:
             # Insert
-            if(tmp>num):
-                break
             if (isinstance(delta,DeltaObjects.Insert)):
                 # string from 0 position + Insert Contents + rest of string
                 backHalf = self.words[0:delta.location]
