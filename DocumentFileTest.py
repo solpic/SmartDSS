@@ -83,7 +83,7 @@ class DocumentScreen:
 
         # Taboo Word Menu
         tabooMenu = Menu(self.mainMenu)
-        tabooWords = TabooWords.TabooWords.getAllTaboo() 
+        tabooWords = TabooWords.TabooWord.getAllTaboo() 
         for tWord in tabooWords:
             tabooMenu.add_command(label=tWord)
         tabooMenu.add_separator()
