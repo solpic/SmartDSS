@@ -1,7 +1,6 @@
 '''This is just a test file to test instatiating a DocumentScreen from another file'''
 
 import DocumentFileTest
-import Users1
 import DocumentModel
 
 
@@ -21,7 +20,7 @@ guestUser = user("GU")
 ordUser = user("OU")
 superUser = user("SU")
 
-testDoc = DocumentModel.DocumentModel(guestUser, "MY DOCUMENT NAME","PRIVATE")
-testScreen1 = DocumentFileTest.DocumentScreen(guestUser,testDoc)
+testDoc = DocumentModel.DocumentModel(ordUser, "MY DOCUMENT NAME","PRIVATE")
+testScreen1 = DocumentFileTest.DocumentScreen(ordUser,testDoc)
 # testScreen2 = DocumentFileTest.DocumentScreen(ordUser,tmpSList)
 # testScreen3 = DocumentFileTest.DocumentScreen(superUser)
