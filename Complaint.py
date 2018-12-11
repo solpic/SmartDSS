@@ -10,3 +10,6 @@ class Complaint():
     
     def getComplaintCreator(self):
         return self.user
+        
+    def show(self):
+        print("COMPLAINT: "+self.text+", From: "+self.user)

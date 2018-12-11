@@ -7,6 +7,7 @@ import DeltaObjects
 #TODO: Real User Class Integration
 class DocumentScreen:
     def __init__(self,user,document):
+        self.lastChange = 0
         self.currentUser = user;
         self.userRank = user.getRank()
         self.currentDoc= document
@@ -188,10 +189,12 @@ class DocumentScreen:
     def submitChanges(self):
         from DocumentDB import doc_cli
         old = self.currentDoc.getWords()
+        print("OLD: "+old)
         new = self.txt.get("1.0",'end-1c')
-        self.currentDoc.generateDeltas(old,new)
+        deltas = self.currentDoc.generateDeltas(old,new)
         self.currentDoc.words= new
-        for delta in self.currentDoc.deltaLog:
+        for delta in deltas:
+            delta.show()
             if(isinstance(delta,DeltaObjects.Delete)):
                 doc_cli.push_delete(self.currentDoc.doc_id,delta)
             if(isinstance(delta,DeltaObjects.Insert)):
@@ -206,19 +209,19 @@ class DocumentScreen:
             j.show()
         print("Old {} | New {} |Doc.words {}".format(old,new,self.currentDoc.words))
 
+    def refreshText(self):
+        self.txt.delete(1.0, END)
+        self.txt.insert(END, self.currentDoc.words)
+
     def pullChanges(self):
         from DocumentDB import doc_cli
-        deltaListServ = doc_cli.get_updates(self.currentDoc.doc_id,0)
-        print("DeltaList Server")
-        for i in deltaListServ:
+        doc_cli.show_all_updates()
+        deltaList= doc_cli.get_updates(self.currentDoc.doc_id,self.lastChange)
+        for i in deltaList:
             i.show()
-        print("DeltaList Client")
-        deltaListClient = self.currentDoc.deltaLog
-        for j in deltaListClient:
-            j.show()
-        self.currentDoc.reconstruct(100000,deltaListServ)
+        self.currentDoc.reconstruct(5,deltaList)
         self.refreshText()
-        print("self.currentDoc.words: [{}]".format(self.currentDoc.words))
+        self.lastChange = deltaList[len(deltaList)-1].u_id
 
     # TODO: UPDATING SCREEN WITH NEW INFO
     # For Menu we can destroy and re build

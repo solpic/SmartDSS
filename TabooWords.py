@@ -1,10 +1,12 @@
 
 
-class TabooWords:
+class TabooWord:
 
+# status 0 is proposed, 1 is accepted
     allTaboo = []
-    def __init__(self,t):
+    def __init__(self,t, status=0):
         self.text = t
+        self.status = status
         
     def getTaboo(self):
         return self.text
@@ -20,3 +22,6 @@ class TabooWords:
     def getAllTaboo():
         #TODO: Database Call to get all words
         return ["This", "should", "have all the words from the servrer"]
+        
+    def show(self):
+        print("Word: "+self.text+", Status: "+str(self.status))
