@@ -62,16 +62,22 @@ class DocumentScreen:
         # self.updateMembersMenu.add_command(label="Remove User",command=self.removeUser)
         
         membOptMenu.add_cascade(label="Update Members", menu=self.updateMembersMenu)
-        allMembersMenu = Menu(membOptMenu)
+        self.allMembersMenu = Menu(membOptMenu)
+        #TODO: UNcommetn 2 lower lines
+        #for member in self.currentDoc.getMembers():
+            #self.allMembersMenu.add_command(label=member.getUserName(),command=self.removeUser(member.getUserName()))
+        self.allUserMenu = Menu(self.updateMembersMenu)
         # allMembersMenu.add_command(label="xyz")
         for member in self.currentDoc.getMembers():
             allMembersMenu.add_command(label=member.getUserName())
         self.updateMembersMenu.add_cascade(label="Remove User", menu=allMembersMenu)
         allUserMenu = Menu(self.updateMembersMenu)
         for user in self.allUsers:
-            allUserMenu.add_command(label=user)
-        self.updateMembersMenu.add_cascade(label="All Registered Users",menu=allUserMenu)
-        membOptMenu.add_cascade(label="View All Members", menu=allMembersMenu)
+            self.allUserMenu.add_command(label=user)
+            self.allMembersMenu.add_command(label=user,command=lambda:self.removeUser(user))
+        self.updateMembersMenu.add_cascade(label="Remove Member", menu=self.allMembersMenu)
+        self.updateMembersMenu.add_cascade(label="All Registered System Users",menu=self.allUserMenu)
+        membOptMenu.add_cascade(label="View All Members", menu=self.allMembersMenu)
         self.mainMenu.add_cascade(label="Membership Option",menu=membOptMenu)
 
         # Taboo Word Menu
@@ -125,6 +131,7 @@ class DocumentScreen:
         textFrame.grid_rowconfigure(0,weight=1)
         textFrame.grid_columnconfigure(0,weight=1)
         self.txt = Text(textFrame, borderwidth=3, relief="sunken",width=200,height=DocHeight)
+        self.txt.insert(END,self.currentDoc.words)
         self.txt.config(font=("consolas", 12), undo=True, wrap='word')
         self.txt.grid(row=0, column=0, sticky="nsew", padx=2, pady=2,)
         scrollb = Scrollbar(textFrame, command=self.txt.yview)
@@ -132,12 +139,32 @@ class DocumentScreen:
         self.txt['yscrollcommand'] = scrollb.set    
         self.root.config(menu=self.mainMenu)    
         self.root.mainloop()
+#--- END MAKE SCREEN ------------------------------
 
+    def refreshText(self):
+        self.txt.delete(1.0,END)
+        self.txt.insert(END,self.currentDoc.words)
     def addUser(self):
         print("Add User Function")
         self.updateMembersMenu
-    def removeUser(self):
-        print("Remove User Function")
+    def removeUser(self,uname):
+        print("Remove User Function , uname: {}".format(uname))
+        x=0
+        '''Real Code
+        mem = self.currentDoc.getMembers()
+        for i in range(0,len(mem)):
+            if (mem[i].getUserName()==uname):
+                x=i
+                break
+        '''
+
+        # Placeholder Code
+        mem = self.allUsers
+        for i in range(0,len(mem)):
+            if (mem[i]==uname):
+                x = i
+                break
+        self.allMembersMenu.delete(x)
     #PostCond: The inputed Word is added to the DB of Taboo Words
     def addTabooWord(self):
         uInput = tkSimpleDialog.askstring("Add Taboo Word","Word?")
@@ -169,14 +196,29 @@ class DocumentScreen:
                 doc_cli.push_delete(self.currentDoc.doc_id,delta)
             if(isinstance(delta,DeltaObjects.Insert)):
                 doc_cli.push_insert(self.currentDoc.doc_id,delta)
+        deltaListServ = doc_cli.get_updates(self.currentDoc.doc_id,0)
+        print("DeltaList Server")
+        for i in deltaListServ:
+            i.show()
+        print("DeltaList Client")
+        deltaListClient = self.currentDoc.deltaLog
+        for j in deltaListClient:
+            j.show()
         print("Old {} | New {} |Doc.words {}".format(old,new,self.currentDoc.words))
 
     def pullChanges(self):
         from DocumentDB import doc_cli
-        deltaList= doc_cli.get_updates(self.currentDoc.doc_id,0)
-        for i in deltaList:
+        deltaListServ = doc_cli.get_updates(self.currentDoc.doc_id,0)
+        print("DeltaList Server")
+        for i in deltaListServ:
             i.show()
-        self.currentDoc.reconstruct(5,deltaList)
+        print("DeltaList Client")
+        deltaListClient = self.currentDoc.deltaLog
+        for j in deltaListClient:
+            j.show()
+        self.currentDoc.reconstruct(100000,deltaListServ)
+        self.refreshText()
+        print("self.currentDoc.words: [{}]".format(self.currentDoc.words))
 
     # TODO: UPDATING SCREEN WITH NEW INFO
     # For Menu we can destroy and re build
