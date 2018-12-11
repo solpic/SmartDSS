@@ -4,6 +4,7 @@ import threading
 import time
 import pickle #serialization stuff
 import DeltaObjects
+import TabooWords
 
 # DocumentDBServer runs on the server and handles DB stuff
 # DocumentDBClient is called by the client for all getters/setters
@@ -24,6 +25,8 @@ class DocumentDBServer():
             self.c.execute('DROP TABLE IF EXISTS documents')
             self.c.execute('DROP TABLE IF EXISTS updates')
             self.c.execute('DROP TABLE IF EXISTS members')
+            self.c.execute('DROP TABLE IF EXISTS taboo')
+            self.c.execute('DROP TABLE IF EXISTS complaints')
         
         # Document class/model definition
         self.c.execute('''CREATE TABLE documents
@@ -39,7 +42,11 @@ class DocumentDBServer():
                         
         self.c.execute('''CREATE TABLE members
                         (doc_id INTEGER, member TEXT)''')
+                        
+        self.c.execute('''CREATE TABLE taboo (word TEXT UNIQUE, status INTEGER)''')
+        self.c.execute('''CREATE TABLE complaints (user TEXT, complaint TEXT)''')
         self.conn.commit()
+        return True
         
     def create_document(self, name, user, contents):
         self.c.execute("SELECT id FROM documents WHERE name=? AND owner=?", (name, user, ))
@@ -148,6 +155,34 @@ class DocumentDBServer():
         
         return pickle.dumps(updates)
         
+    def add_taboo_word(self, word):
+        self.c.execute("INSERT INTO taboo (word, status) VALUES (?, ?)", (word, 0,))
+        return True
+        
+    def get_taboo_words(self):
+        self.c.execute("SELECT * FROM taboo")
+        return pickle.dumps(self.c.fetchall())
+        
+    def accept_taboo_word(self, word):
+        self.c.execute("UPDATE taboo SET status=1 WHERE word=? AND status=0", (word,))
+        return True
+        
+    def delete_taboo_word(self, word):
+        self.c.execute("DELETE FROM taboo WHERE word=?", (word,))
+        return True
+        
+    def get_complaints(self):
+        self.c.execute("SELECT * FROM complaints")
+        return pickle.dumps(self.c.fetchall())
+        
+    def delete_complaint(self, user, complaint):
+        self.c.execute("DELETE FROM complaints WHERE user=? AND complaint=?", (user, complaint, ))
+        return True
+        
+    def add_complaint(self, user, complaint):
+        self.c.execute("INSERT INTO complaints (user, complaint) VALUES (?, ?)", (user, complaint, ))
+        return True
+        
         
 class DocumentDBClient():
     def make_document(self, row):
@@ -213,16 +248,48 @@ class DocumentDBClient():
     def create_document(self, name, user, contents):
         return get_proxy().create_document(name, user, contents)
         
+    def add_taboo_word(self, word):
+        return get_proxy().add_taboo_word(word)
+        
+    def get_taboo_words(self):
+        words = pickle.loads(get_proxy().get_taboo_words().data)
+        
+        ret = []
+        for w in words:
+            ret.append(TabooWords.TabooWord(w[0], w[1]))
+            
+        return ret
+        
+    def accept_taboo_word(self, word):
+        return get_proxy().accept_taboo_word(word)
+        
+    def delete_taboo_word(self, word):
+        return get_proxy().delete_taboo_word(word)
+        
+    def get_complaints(self):
+        from Complaint import Complaint
+        complaints = pickle.loads(get_proxy().get_complaints().data)
+        ret = []
+        for c in complaints:
+            ret.append(Complaint(c[1], c[0]))
+        return ret
+        
+    def delete_complaint(self, user, complaint):
+        return get_proxy().delete_complaint(user, complaint)
+        
+    def add_complaint(self, user, complaint):
+        return get_proxy().add_complaint(user, complaint)
+        
         
 doc_cli = DocumentDBClient()
         
 def main():
     #get_proxy().create_tables()
-    doc_cli.create_document("Poopypants", "Fred", "Why this")
+    doc_cli.delete_complaint("Fred", "Water sucks")
     
-    docs = doc_cli.get_all_documents()
-    for doc in docs:
-        doc.show()
+    complaints = doc_cli.get_complaints()
+    for c in complaints:
+        c.show()
     
 
 if __name__ == '__main__':
