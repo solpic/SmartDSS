@@ -67,7 +67,7 @@ class UserPg():
         Label(frame5, text= self.Interest3, font=('Ariel', 26), fg="medium blue").\
             grid(row=4, column=0, padx=20, sticky=W)
 
-        Button(frame3,text = "create document",font=('Ariel', 30), fg= "medium blue", background ="white" ).grid(row=0, column=0, padx=10, pady=10)
+        Button(frame3,text = "create document",font=('Ariel', 30), fg= "medium blue", background ="white", command = createnewdoc ).grid(row=0, column=0, padx=10, pady=10)
         Button(frame3, text= "recent doc 1", font=('Ariel', 30), fg="medium blue", background="white", width=15).grid(row=0, column=1, padx=20)
         Button(frame3, text= "doc 2", font=('Ariel', 30), fg="medium blue", background="white", width =15).grid(row=0, column=2, padx=10)
         Button(frame3, text= " doc 3", font=('Ariel', 30), fg="medium blue", background="white", width =15).grid(row=0, column=3, padx=10)
@@ -107,12 +107,12 @@ class UserPg():
             searchResultDocs.insert(entry)
         Button(frame7,text="Open Document", font=('Ariel', 24), fg="medium blue", width=16, background= "white").grid(row=3, column=0, pady=5)
 
-        compButton = Button(frame8, text= "Process Complaints", font=('Ariel', 24), fg="medium blue", background="white"
-                            ).grid(row=1, column=1, padx=20, pady=10, sticky=E)
-        tabooButton = Button(frame8, text="Process Taboo Words", font=('Ariel', 24), fg="medium blue",
-                             background="white").grid(row=3, column=1,padx=20, pady=10)
-        ApplucationButton = Button(frame8, text="Process Applications", font=('Ariel', 24), fg="medium blue",
-                             background="white").grid(row=5, column=1, padx=20, pady =10, sticky=E)
+        Button(frame8, text= "Process Complaints", font=('Ariel', 24), fg="medium blue", background="white"
+                            ).grid(row=1, column=1, padx=30, pady=40, sticky=E)
+        Button(frame8, text="Process Taboo Words", font=('Ariel', 24), fg="medium blue",
+                             background="white").grid(row=3, column=1,padx=30, pady=40, sticky = E)
+        Button(frame8, text="Process Applications", font=('Ariel', 24), fg="medium blue",
+                             background="white").grid(row=5, column=1, padx=30, pady =40, sticky=E)
         self.frame1.pack()
 
     def getImage(self):
@@ -139,6 +139,9 @@ class UserPg():
         for entry in self.documentSearch:
             print("bottom entry", entry)
         self.docvar.set(self.documentSearch)
+
+    def createnewdoc(self):
+        print("new document")
 
 
     def main(self, username):
