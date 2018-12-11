@@ -12,6 +12,8 @@ class DocumentScreen:
         self.currentDoc= document
         # self.docMembers = document.getMembers()
         self.allUsers = ["Arik","Idrisy","Microsoft","IBM"] #TODO: Server Call
+        from RPCClient import get_proxy
+        get_proxy().delete_updates(1, 0, 100)
         self.makeScreen()
 
 
@@ -167,8 +169,6 @@ class DocumentScreen:
                 doc_cli.push_delete(self.currentDoc.doc_id,delta)
             if(isinstance(delta,DeltaObjects.Insert)):
                 doc_cli.push_insert(self.currentDoc.doc_id,delta)
-        for i in pulls:
-            i.show()
         print("Old {} | New {} |Doc.words {}".format(old,new,self.currentDoc.words))
 
     def pullChanges(self):

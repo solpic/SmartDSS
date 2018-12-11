@@ -54,6 +54,10 @@ class DocumentDBServer():
         self.locks[self.c.fetchone()[0]] = threading.Lock()
         
         return True
+
+    def delete_updates(self, doc_id, first, last):
+        self.c.execute("DELETE FROM updates WHERE doc_id=? AND id>=? AND id<=?", (doc_id, first, last, ))
+        return True
         
     def show_all_documents(self):
         self.c.execute("SELECT * FROM documents")
