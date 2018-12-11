@@ -3,6 +3,7 @@ from tkinter import*
 import Login2
 import SignUp
 import sqlite3
+import Users1
 from DocumentDB import doc_cli
 
 class HomePg():
@@ -15,6 +16,7 @@ class HomePg():
         self.docName = StringVar()
         self.documentSearch = []
         self.docvar = StringVar(value=self.documentSearch)
+        self.UserDetailService = Users1.Users()
         self.createWidget()
 
     def createWidget(self):
@@ -67,16 +69,14 @@ class HomePg():
     def docsearch(self):
         docs = doc_cli.get_all_documents()
         searchItem = self.docName.get()
-        
+
         names = []
         for doc in docs:
             if searchItem in doc.docName:
                 names.append(doc.docName)
-        
-        #self.documentSearch = self.UserDetailService.searchtestUser(searchItem)
         self.documentSearch = names
         for entry in self.documentSearch:
-            print("bottom entry", entry)
+            print(entry)
         self.docvar.set(names)
 
 
