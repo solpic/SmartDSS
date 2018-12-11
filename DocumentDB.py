@@ -134,6 +134,10 @@ class DocumentDBServer():
         
         return pickle.dumps(res)
         
+    def get_all_documents(self):
+        self.c.execute("SELECT * FROM documents")
+        return pickle.dumps(self.c.fetchall())
+        
     def get_updates(self, doc_id, last_update):
         self.c.execute("SELECT * FROM updates WHERE doc_id=? AND id>?", (doc_id, last_update,))
         
@@ -146,12 +150,33 @@ class DocumentDBServer():
         
         
 class DocumentDBClient():
+    def make_document(self, row):
+        from DocumentModel import DocumentModel
+        doc = DocumentModel()
+        doc.docName = row[0]
+        doc.owner = row[1]
+        doc.contents = row[2]
+        doc.versionNumber = row[3]
+        doc.privacyLevel = row[4]
+        doc.createDate = row[5]
+        doc.locked = row[6]
+        doc.doc_id = row[7]
+        
+        return doc
     def make_update(self, row):
         if row[3]=="":
             # Deletion
             return DeltaObjects.Delete(row[1], row[2])
         else:
             return DeltaObjects.Insert(row[1], row[3])
+            
+    def get_all_documents(self):
+        rows = pickle.loads(get_proxy().get_all_documents().data)
+        docs = []
+        for row in rows:
+            docs.append(self.make_document(row))
+        return docs
+        
             
     def get_document(self, name, user, version=0):
         return pickle.loads(get_proxy().get_document(name, user, version).data)
@@ -190,17 +215,12 @@ doc_cli = DocumentDBClient()
         
 def main():
     #get_proxy().create_tables()
-    doc_cli.create_document("Poopy", "Fred", "Why this")
-    get_proxy().show_all_documents()
-    doc_cli.add_member(1, "Faf")
-    doc_cli.push_insert(1, DeltaObjects.Insert(0, "hello"))
-    doc_cli.push_delete(1, DeltaObjects.Delete(0, 3))
+    doc_cli.create_document("Poopypants", "Fred", "Why this")
     
-    updates = doc_cli.get_updates(1, 0)
+    docs = doc_cli.get_all_documents()
+    for doc in docs:
+        doc.show()
     
-    for u in updates:
-        u.show()
-
 
 if __name__ == '__main__':
     main()
