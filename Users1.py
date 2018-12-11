@@ -1,4 +1,5 @@
 import sqlite3
+import math
 
 
 class Users():
@@ -6,6 +7,7 @@ class Users():
         self.conn = sqlite3.connect('usertest.db')
         self.c = self.conn.cursor()
         self.SearchList = []
+        self.SearchInterestList = []
         #self.c.execute('''CREATE TABLE t
         #                    (username text NOT NULL PRIMARY KEY, password text, Fname text, Lname text, Interest1 text,
         #         Interest2 text, Interest3 text, joindate date, type text)''')
@@ -31,9 +33,21 @@ class Users():
         return passw
 
     def searchUserInt(self, interest):
-        # search by username
-        # search by interests
-        self.c.execute('SELECT username FROM t WHERE Interest1= ? OR Interest2= ? OR Interest3= ?', interest)
+        if len(interest) <=3:
+            interest = interest
+        else:
+            partialWordCount = math.floor(len(interest)/2)
+            partialIntSearch = interest[0:partialWordCount]
+            interest = partialIntSearch
+        self.conn.row_factory = lambda cursor, row: row[0]
+        d = self.conn.cursor()
+        self.SearchInterestList = d.execute('SELECT username FROM t WHERE Interest1 LIKE ?' , ('%'+ interest + '%',)).fetchall()
+        self.SearchInterestList.extend(d.execute('SELECT username FROM t WHERE Interest2 LIKE ?' , ('%'+ interest + '%',)).fetchall())
+        self.SearchInterestList.extend(d.execute('SELECT username FROM t WHERE Interest3 LIKE ?', ('%' + interest + '%',)).fetchall())
+        for entry in self.SearchInterestList:
+            print(entry)
+        return self.SearchInterestList
+
 
     def searchUser(self, username):
         user = (username,)
@@ -54,7 +68,6 @@ class Users():
         user = (username,)
         self.c.execute('SELECT type FROM t WHERE username= ? ', user)
         rank = self.c.fetchone()[0]
-
         print(rank)
         return rank
     #   Pre: Runs on a user instance

@@ -84,7 +84,7 @@ class UserPg():
 
         Label(frame6, text="Search Members by Interests", font=('Ariel', 18), fg="medium blue", width=22).grid(row=3, column=0)
         Entry(frame6, textvariable=self.memberInt, width=50).grid(row=4, column=0, sticky=E, padx=10)
-        searchpic2 = Button(frame6, image=simg, command=self.memSearch)
+        searchpic2 = Button(frame6, image=simg, command=self.intSearch)
         searchpic2.image = simg
         searchpic2.grid(row=4, column=1)
         searchResultInt = Listbox(frame6, listvariable= self.var, width=50).grid(row=5, column=0, sticky=E, padx=10)
@@ -115,12 +115,17 @@ class UserPg():
 
     def memSearch(self):
         user = self.memberName.get()
-        UserDetailService = Users1.Users()
-        self.memberSearch = UserDetailService.searchUser(user)
+        self.memberSearch = self.UserDetailService.searchUser(user)
         for entry in self.memberSearch:
             print("bottom entry", entry)
         self.var.set(self.memberSearch)
 
+    def intSearch(self):
+        user = self.memberInt.get()
+        self.interestsSearch = self.UserDetailService.searchUserInt(user)
+        for entry in self.memberSearch:
+            print("bottom entry", entry)
+        self.var.set(self.memberSearch)
 
     def main(self, username):
         root = Toplevel()
