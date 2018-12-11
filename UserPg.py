@@ -21,8 +21,10 @@ class UserPg():
         self.docName = StringVar()
         self.memberSearch = []
         self.interestsSearch = []
+        self.documentSearch = []
         self.invar = StringVar(value=self.interestsSearch)
         self.var = StringVar(value=self.memberSearch)
+        self.docvar = StringVar(value= self.documentSearch)
         self.Interest1 = self.UserDetailService.getInterest1(username)
         self.Interest2 = self.UserDetailService.getInterest2(username)
         self.Interest3 = self.UserDetailService.getInterest3(username)
@@ -87,19 +89,23 @@ class UserPg():
         searchpic2 = Button(frame6, image=simg, command=self.intSearch)
         searchpic2.image = simg
         searchpic2.grid(row=4, column=1)
-        searchResultInt = Listbox(frame6, listvariable= self.var, width=50).grid(row=5, column=0, sticky=E, padx=10)
-        for entry in self.memberSearch:
+        searchResultInt = Listbox(frame6, listvariable= self.invar, width=50).grid(row=5, column=0, sticky=E, padx=10)
+        for entry in self.interestsSearch:
             print("entry", entry)
             searchResultInt.insert(entry)
 
-        searchdoc = Label(frame7, text="Search Documents", font=('Ariel', 28), fg="medium blue", width=15).grid(
+        Label(frame7, text="Search Documents", font=('Ariel', 26), fg="medium blue", width=15).grid(
             sticky=E)
-        searchDEntry = Entry(frame7, textvariable = self.docName, width=50).grid(row=1, column=0, sticky=E, padx=10)
+        Entry(frame7, textvariable = self.docName, width=50).grid(row=1, column=0, sticky=E, padx=10)
         simg = PhotoImage(file="images.gif")
-        searchpicD = Button(frame7, image=simg)
+        searchpicD = Button(frame7, image=simg, command = self.docSearch)
         searchpicD.image = simg
         searchpicD.grid(row=1, column=1)
-        searchDresult = Listbox(frame7, width=50).grid(row=2, column=0, sticky=E, padx=10)
+        searchResultDocs = Listbox(frame7, listvariable = self.docvar, width=50).grid(row=2, column=0, sticky=E, padx=10)
+        for entry in self.documentSearch:
+            print("entry", entry)
+            searchResultDocs.insert(entry)
+        Button(frame7,text="Open Document", font=('Ariel', 24), fg="medium blue", width=16, background= "white").grid(row=3, column=0, pady=5)
 
         compButton = Button(frame8, text= "Process Complaints", font=('Ariel', 24), fg="medium blue", background="white"
                             ).grid(row=1, column=1, padx=20, pady=10, sticky=E)
@@ -123,9 +129,17 @@ class UserPg():
     def intSearch(self):
         user = self.memberInt.get()
         self.interestsSearch = self.UserDetailService.searchUserInt(user)
-        for entry in self.memberSearch:
+        for entry in self.interestsSearch:
             print("bottom entry", entry)
-        self.var.set(self.memberSearch)
+        self.invar.set(self.interestsSearch)
+
+    def docSearch(self):
+        searchItem = self.docName.get()
+        self.documentSearch = self.UserDetailService.searchtestUser(searchItem)
+        for entry in self.documentSearch:
+            print("bottom entry", entry)
+        self.docvar.set(self.documentSearch)
+
 
     def main(self, username):
         root = Toplevel()

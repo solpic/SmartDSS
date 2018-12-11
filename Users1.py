@@ -48,7 +48,6 @@ class Users():
             print(entry)
         return self.SearchInterestList
 
-
     def searchUser(self, username):
         user = (username,)
         self.conn.row_factory = lambda cursor, row: row[0]
@@ -57,6 +56,14 @@ class Users():
         for entry in self.SearchList:
             print(entry)
         return self.SearchList
+
+    def searchtestUser(self, username):
+        user = (username,)
+        self.SearchList = self.c.execute('SELECT username, Interest1 FROM t WHERE username = ?', user).fetchall()
+        for entry in self.SearchList:
+            print(entry)
+        return self.SearchList
+
 
     def setUser(self):
         user = (self.username,)
