@@ -13,10 +13,11 @@ class TabooWord:
 
     @staticmethod
     def addTabooWord(word):
-        global allTaboo
-        allTaboo.append(word)
+        from DocumentDB import doc_cli
+        doc_cli.add_taboo_word(word)
+        #global allTaboo
+        #allTaboo.append(word)
         # TODO: DallTaboo isnt an attribute
-        print("# TODO: THIS DOESNT WORK")
 
     @staticmethod
     def getAllTaboo():
