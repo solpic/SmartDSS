@@ -67,12 +67,6 @@ class DocumentScreen:
         self.pastVerMenu = Menu(optMenu)
         num = 0
         #deltas = doc_cli.get_updates(self.currentDoc.doc_id,)
-        versions = doc_cli.get_versions(self.currentDoc.doc_id)
-        i = 0
-        for v in versions:
-            print("Adding Restore Points")
-            self.pastVerMenu.add_command(label = str(i)+v[0], command=lambda i=v[1]: self.loadVersion(i) )
-            num+=1
         #optMenu.add_command(label="Set Privacy Level")
         self.privMenu = Menu(optMenu)
         self.privMenu .add_command(label="Current Privacy Level: "+ self.currentDoc.privacyLevel)
@@ -238,9 +232,10 @@ class DocumentScreen:
         print("Go back one delta")
     
     def loadVersion(self, update):
-        self.pullChanges(update)
+        #self.pullChanges(update)
        #self.lastChange = -1
-        self.submitChanges()
+       # self.submitChanges()
+        print("faf")
     
     def createNewVersion(self):
         from DocumentDB import doc_cli
@@ -297,6 +292,8 @@ class DocumentScreen:
         from DocumentDB import doc_cli
         oldDeltaList = self.currentDoc.deltaLog
         deltaList= doc_cli.get_updates(self.currentDoc.doc_id,0)
+        for d in deltaList:
+            d.show()
             
         self.currentDoc.reconstruct(5,deltaList)
         self.refreshText()
