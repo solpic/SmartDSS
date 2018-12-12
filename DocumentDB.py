@@ -224,8 +224,8 @@ class DocumentDBServer():
             self.c.execute("SELECT * FROM documents")
         else:
             print("Not SU")
-            self.c.execute("SELECT * FROM documents WHERE privacy=? OR PRIVACY=? OR owner=?", \
-                        ("public", "restricted", username, ))
+            self.c.execute("SELECT * FROM documents WHERE privacy=? OR PRIVACY=? OR owner=? OR id IN (SELECT doc_id FROM members WHERE member=?)", \
+                        ("public", "restricted", username, username, ))
         
         return pickle.dumps(self.c.fetchall())
         

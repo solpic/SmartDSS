@@ -178,7 +178,7 @@ class UserPg():
 
 #This function searches for documents based on title
     def docSearch(self):
-        docs = doc_cli.get_all_documents()
+        docs = doc_cli.search_docs(self.user)
         searchItem = self.docName.get()
 
         names = []
@@ -191,7 +191,7 @@ class UserPg():
 
 #This function gets the user documents to show his/her 3 most recent
     def getDocs(self):
-        docs = doc_cli.search_docs(self.user)
+        docs = doc_cli.get_all_documents()
         names = []
         for doc in docs:
             if self.user in doc.owner:
