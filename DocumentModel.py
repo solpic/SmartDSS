@@ -52,7 +52,7 @@ class DocumentModel():
         from DocumentDB import doc_cli
         if doc_cli.add_member(self.doc_id,member):
             self.memberList.append(member)
-            
+
 
     def removeMember(self,member):
         from DocumentDB import doc_cli
@@ -86,7 +86,7 @@ class DocumentModel():
 
     def generateDeltas(self,old,new):
 
-        print("Old: "+old)
+        # print("Old: "+old)
         #old is the old document words
         #new is the current docment words
         tmpDeltaLog = []
