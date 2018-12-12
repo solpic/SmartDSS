@@ -12,7 +12,8 @@ class DocumentScreen:
         self.userRank = user.getRank()
         self.currentDoc= document
         # self.docMembers = document.getMembers()
-        self.allUsers = ["Arik","Idrisy","Microsoft","IBM"] #TODO: Server Call
+        from DocumentDB import doc_cli
+        self.allUsers = doc_cli.get_all_sys_Users() #TODO: Server Call
         from RPCClient import get_proxy
         get_proxy().delete_updates(1, 0, 100)
         self.makeScreen()
