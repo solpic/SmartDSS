@@ -122,8 +122,6 @@ class UserPg():
             OUdocpic.image = docimg
             OUdocpic.grid(row=1, column=1)
 
-
-
         self.frame1.pack()
 
 
