@@ -220,11 +220,12 @@ class DocumentDBServer():
     def search_docs(self, username):
         self.c.execute("SELECT type FROM users WHERE username=?", (username, ))
         if self.c.fetchone()[0]=="SU":
+            print("SU")
             self.c.execute("SELECT * FROM documents")
         else:
+            print("Not SU")
             self.c.execute("SELECT * FROM documents WHERE privacy=? OR PRIVACY=? OR owner=? OR id IN (SELECT doc_id FROM members WHERE member=?)", \
                         ("public", "restricted", username, username, ))
-        
         
         return pickle.dumps(self.c.fetchall())
         
