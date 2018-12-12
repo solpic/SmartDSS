@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 from tkinter import*
 
 
@@ -128,4 +127,4 @@ class MemberApplication():
         Applicationgui = MemberApplication()
         Applicationgui.root.mainloop()
 
->>>>>>> 6fb4b233ff126f5bcb30709b73de6f3ee352fddf
+

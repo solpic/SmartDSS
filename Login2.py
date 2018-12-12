@@ -1,9 +1,10 @@
-from tkinter import*
+from tkinter import *
 from tkinter import messagebox
 import sqlite3
 import UserPg
 import HomePg
 from DocumentDB import doc_cli
+
 
 class Login():
     def __init__(self):
@@ -17,56 +18,44 @@ class Login():
         self.showLogin()
 
     def createWidgets(self):
-        Label(self.root, textvariable = self.page, font=("",20)).pack()
+        Label(self.root, textvariable=self.page, font=("", 20)).pack()
         frame1 = Frame(self.root)
-        Label(frame1,text = "Username").grid(sticky=W)
-        Entry(frame1, textvariable = self.loginName).grid(row=0,column=1)
+        Label(frame1, text="Username").grid(sticky=W)
+        Entry(frame1, textvariable=self.loginName).grid(row=0, column=1)
         Label(frame1, text="Password").grid(sticky=W)
-        Entry(frame1, textvariable=self.loginPass, show='*').grid(row=1,column=1)
+        Entry(frame1, textvariable=self.loginPass, show='*').grid(row=1, column=1)
         Button(frame1, text="Log in", command=self.login).grid(row=3, pady=10)
-        Button(frame1, text="Cancel", command=self.quit).grid( row=3 ,column=1)
+        Button(frame1, text="Cancel", command=self.quit).grid(row=3, column=1)
         frame3 = Frame(self.root)
         Label(frame3, text="Logged In", font=("", 50)).pack(padx=10, pady=10)
-        frame1.pack(padx = 10, pady=10)
+        frame1.pack(padx=10, pady=10)
         self.logedFrame = frame3
         self.loginFrame = frame1
-        Label(self.root,textvariable =self.sts).pack()
-
+        Label(self.root, textvariable=self.sts).pack()
 
     def login(self):
         username = self.loginName.get()
         password = self.loginPass.get()
-<<<<<<< HEAD
-        x1 = Users1.Users()
-=======
-        
+
         doc_cli.show_all_users()
         passwordA = doc_cli.getPassword(username)[0]
         passwordN = password
-        
-        if(username == NONE):
-             print("Error no username")
-        if(passwordA == passwordN):
-             self.showLoged(username)
->>>>>>> 6fb4b233ff126f5bcb30709b73de6f3ee352fddf
+
+        if (username == NONE):
+            print("Error no username")
+        if (passwordA == passwordN):
+            self.showLoged(username)
 
         if username == "":
-             messagebox.showerror("Error", "Please enter a username and password")
+            messagebox.showerror("Error", "Please enter a username and password")
         else:
-<<<<<<< HEAD
-            passwordA = x1.getPassword(username)
-
-            rank = x1.getRank(username)
-            passwordN = (password,)
-=======
 
             rank = doc_cli.getRank(username)
->>>>>>> 6fb4b233ff126f5bcb30709b73de6f3ee352fddf
             if rank == 'GU':
                 messagebox.showwarning("Warning",
-                                   "Membership Application has not yet been approved so cannot log on")
+                                       "Membership Application has not yet been approved so cannot log on")
 
-            elif(passwordA == passwordN):
+            elif (passwordA == passwordN):
                 self.showLoged(username)
             else:
                 self.sts.set("Wrong Name and Password")
@@ -83,7 +72,7 @@ class Login():
     def quit(self):
         self.root.destroy()
 
-#if __name__=="__main__":
+    # if __name__=="__main__":
     def main(self):
         loggui = Login()
         loggui.root.mainloop()
