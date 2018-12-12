@@ -40,8 +40,8 @@ class MemberApplication():
         idx = item[0]
         memberdetail = self.applicationSearch[idx]
         username = memberdetail[0]
-        self.doc_cli.setUser(username)
-        self.applicationSearch = self.doc_cli.getMemberAppl()
+        doc_cli.setUser(username)
+        self.applicationSearch = doc_cli.getMemberAppl()
         self.appvar.set(self.applicationSearch)
 
     def deleteMember(self):
@@ -49,8 +49,8 @@ class MemberApplication():
         idx = item[0]
         memberdetail = self.applicationSearch[idx]
         username = memberdetail[0]
-        self.doc_cli.removeUser(username)
-        self.applicationSearch = self.doc_cli.getMemberAppl()
+        doc_cli.removeUser(username)
+        self.applicationSearch = doc_cli.getMemberAppl()
         self.appvar.set(self.applicationSearch)
 
     def quit(self):
