@@ -15,7 +15,6 @@ class DocumentScreen:
         from DocumentDB import doc_cli
         #self.allUsers = doc_cli.get_all_sys_Users() #TODO: Server Call
         self.allUsers = ["ARI","ME","JAS"]
-
         self.makeScreen()
 
 
