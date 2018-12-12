@@ -79,8 +79,6 @@ class SignUp():
             usern2 =""
         else:
             usern2 = usern[0]
-        print(username)
-        print(usern2)
 
         if(username == "" ):
             messagebox.showwarning("Warning",

@@ -95,6 +95,7 @@ class UserPg():
 
         Label(frame6, text="Search Members by Username", font=('Ariel', 16), fg="medium blue", width=24).grid(row=0, column=0)
         Entry(frame6, textvariable=self.memberName, width=50).grid(row=1, column=0, sticky=E, padx=10)
+
         simg = PhotoImage(file="images.gif")
         searchpic1 = Button(frame6, image=simg, command=self.memSearch)
         searchpic1.image = simg
@@ -146,7 +147,14 @@ class UserPg():
         self.frame1.pack()
 
     def getImage(self):
-        img = PhotoImage(file="testgirl.gif")
+        if (self.rank == 'SU' and self.Interest1 == "Python"):
+            img = PhotoImage(file="testgirl.gif")
+        elif (self.rank == 'OU' and self.Interest1 == "Python"):
+            img = PhotoImage(file="testboy.gif")
+        elif (self.rank == "SU" ):
+            img = PhotoImage(file="SU.gif")
+        else:
+            img = PhotoImage(file="Fred.gif")
         return img
 
     def memSearch(self):
@@ -188,8 +196,13 @@ class UserPg():
             if self.user not in doc.owner:
                 entry = (doc.docName, doc.owner, doc.versionNumber, doc.createDate)
                 self.userDocs.append(entry)
+        for doc in docs:
+            entry = (doc.docName, doc.owner, doc.versionNumber, doc.createDate)
+            names.append(entry)
+        for entry in names:
+            print("total", names)
         for entry in self.userDocs:
-            print("results", entry)
+            print("docs", entry)
 
     def sortdate(self, val):
         return val[3]
