@@ -1,5 +1,6 @@
 from tkinter import*
 import Users1
+from DocumentDB import doc_cli
 
 class MemberApplication():
     def __init__(self):
@@ -8,7 +9,6 @@ class MemberApplication():
         root.geometry('370x230')
         self.applicationSearch = []
         self.appvar = StringVar(value=self.applicationSearch)
-        self.UserDetailService = Users1.Users()
         self.createWidgets()
 
     def createWidgets(self):
@@ -21,7 +21,7 @@ class MemberApplication():
         self.mapplications.grid(row=1, column=0, padx=5, pady=5)
         for entry in self.applicationSearch:
             print("entry", entry)
-            mapplications.insert(entry)
+            self.mapplications.insert(entry)
         Button(frame2, text="View", font=('Ariel', 14), fg="medium blue", command=self.getApplications).grid(row=0, column=0,padx=2, pady=5)
         Button(frame2, text="Accept", font=('Ariel', 14), fg="medium blue", command = self.acceptMember).grid(row=0, column=1, padx=2, pady=5)
         Button(frame2, text="Deny", font=('Ariel', 14), fg="medium blue", command =self.deleteMember).grid(row=0, column=2, padx=2, pady=5)
@@ -30,7 +30,7 @@ class MemberApplication():
         frame1.pack()
 
     def getApplications(self):
-        self.applicationSearch = self.UserDetailService.getMemberAppl()
+        self.applicationSearch = doc_cli.getMemberAppl()
         for entry in self.applicationSearch:
             print("PM entry", entry)
         self.appvar.set(self.applicationSearch)
@@ -40,8 +40,8 @@ class MemberApplication():
         idx = item[0]
         memberdetail = self.applicationSearch[idx]
         username = memberdetail[0]
-        self.UserDetailService.setUser(username)
-        self.applicationSearch = self.UserDetailService.getMemberAppl()
+        self.doc_cli.setUser(username)
+        self.applicationSearch = self.doc_cli.getMemberAppl()
         self.appvar.set(self.applicationSearch)
 
     def deleteMember(self):
@@ -49,8 +49,8 @@ class MemberApplication():
         idx = item[0]
         memberdetail = self.applicationSearch[idx]
         username = memberdetail[0]
-        self.UserDetailService.removeUser(username)
-        self.applicationSearch = self.UserDetailService.getMemberAppl()
+        self.doc_cli.removeUser(username)
+        self.applicationSearch = self.doc_cli.getMemberAppl()
         self.appvar.set(self.applicationSearch)
 
     def quit(self):
