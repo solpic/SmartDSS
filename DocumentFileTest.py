@@ -294,7 +294,6 @@ class DocumentScreen:
                 self.pastVerMenu.add_command(label= newDeltas[i].show() + "NUM: " + str(i), 
                 command = lambda k = i, d=self.currentDoc.deltaLog:self.currentDoc.sRec(k,d))
     def pullChanges(self):
-        print("PUlling until version id "+str(last))
         from DocumentDB import doc_cli
         oldDeltaList = self.currentDoc.deltaLog
         deltaList= doc_cli.get_updates(self.currentDoc.doc_id,0)
