@@ -8,11 +8,13 @@ import ProcessTabooWord
 import ProcessComplaints
 #import createfilepopup
 import datetime
-
-
 import DocumentFileTest
 from DocumentScreenTester import user
 
+## This UserPage is specific to the user. It holds all the main functions of the system
+## From this page the user can create documents, search for documents, open documents
+## If the user has a rank of SU they have additional buttons to process member applications, complaints and taboo words
+## To see this page the user must be a member with a valid username and password and rank of OU or SU
 
 class UserPg():
 
@@ -47,6 +49,7 @@ class UserPg():
         self.getDocs()
         self.createWidget()
 
+# This function creates all the GUI for the user page and holds calls to the functions
     def createWidget(self):
         self.frame1.configure(background="white")
         frame2 = Frame(self.frame1)
@@ -66,9 +69,8 @@ class UserPg():
         frame8.pack(side=LEFT, fill=X)
 
         UsernameText = self.user
-        Label(frame2, text=UsernameText + "   " + self.rank, font=('Ariel', 34), fg="medium blue",
+        Label(frame2, text=UsernameText , font=('Ariel', 34), fg="medium blue",
               background="white").grid(row=0, column=0, padx=10, pady=20)
-        #  Label(frame2, text="", width =800).grid(row=0,column=1)
 
         img = self.getImage()
         profile = Label(frame5, image=img)
@@ -102,18 +104,15 @@ class UserPg():
         searchpic1.grid(row=1, column=1)
         searchResults = Listbox(frame6, listvariable=self.var, width=50).grid(row=2, column=0, sticky=E, padx=10)
         for entry in self.memberSearch:
-            print("entry", entry)
             searchResults.insert(entry)
 
-        Label(frame6, text="Search Members by Interests", font=('Ariel', 18), fg="medium blue", width=22).grid(row=3,
-                                                                                                               column=0)
+        Label(frame6, text="Search Members by Interests", font=('Ariel', 18), fg="medium blue", width=22).grid(row=3,                                                                                                        column=0)
         Entry(frame6, textvariable=self.memberInt, width=50).grid(row=4, column=0, sticky=E, padx=10)
         searchpic2 = Button(frame6, image=simg, command=self.intSearch)
         searchpic2.image = simg
         searchpic2.grid(row=4, column=1)
         searchResultInt = Listbox(frame6, listvariable=self.invar, width=50).grid(row=5, column=0, sticky=E, padx=10)
         for entry in self.interestsSearch:
-            print("entry", entry)
             searchResultInt.insert(entry)
 
         Label(frame7, text="Search Documents", font=('Ariel', 26), fg="medium blue", width=15).grid(
@@ -157,20 +156,20 @@ class UserPg():
             img = PhotoImage(file="Fred.gif")
         return img
 
+# This function searches for a Member based on name
     def memSearch(self):
         user = self.memberName.get()
         self.memberSearch = doc_cli.searchUser(user)
         for entry in self.memberSearch:
-            print("bottom entry", entry)
         self.var.set(self.memberSearch)
 
+# This function searches for a member based on Interests
     def intSearch(self):
         user = self.memberInt.get()
         self.interestsSearch = doc_cli.searchUserInt(user)
-        for entry in self.interestsSearch:
-            print("bottom entry", entry)
         self.invar.set(self.interestsSearch)
 
+#This function searches for documents based on title
     def docSearch(self):
         docs = doc_cli.get_all_documents()
         searchItem = self.docName.get()
@@ -183,6 +182,7 @@ class UserPg():
         self.documentSearch = names
         self.docvar.set(names)
 
+#This function gets the user documents to show his/her 3 most recent
     def getDocs(self):
         docs = doc_cli.get_all_documents()
         names = []
@@ -199,14 +199,11 @@ class UserPg():
         for doc in docs:
             entry = (doc.docName, doc.owner, doc.versionNumber, doc.createDate)
             names.append(entry)
-        for entry in names:
-            print("total", names)
-        for entry in self.userDocs:
-            print("docs", entry)
 
     def sortdate(self, val):
         return val[3]
 
+# Function to create a new document
     def createnewdoc(self):
         print("new document")
         from tkinter import simpledialog
@@ -217,6 +214,7 @@ class UserPg():
         doc_cli.get_document(doc_name, self.user, versionNo)
         DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
 
+#Function to open a document
     def opendocument(self):
         item = self.searchResultDocs.curselection()
         idx = item[0]
@@ -244,12 +242,16 @@ class UserPg():
         versionNo = self.userDocs[2][2]
         DocumentFileTest.DocumentScreen(user(usern), doc_cli.get_document(documentname, self.user, versionNo))
 
+# The next 3 functions can only be accessed by a SU
+#Function that connects to the ProcessMember class that holds the Process Member GUI and functions
     def processApl(self):
         ProcessMember.MemberApplication.main(self)
 
+ # Function that connects to the ProcessTabooWord class that holds the Process Taboo Words GUI and functions
     def processTaboo(self):
         ProcessTabooWord.ProcessTabooWord.main(self)
 
+   # Function that connects to the ProcessComplaints class that holds the Process Complaints GUI and functions
     def processComplaint(self):
         ProcessComplaints.ProcessComplaints.main(self)
 
