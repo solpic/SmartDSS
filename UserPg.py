@@ -229,11 +229,7 @@ class UserPg():
         document = docdetail[0]
         usern = docdetail[1]
         versionNo = docdetail[2]
-        
         doc = doc_cli.get_document(document, usern, versionNo)
-        
-        
-        
         DocumentFileTest.DocumentScreen(user(usern), doc)
 
     def openDoc1(self):
