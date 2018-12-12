@@ -254,6 +254,7 @@ class DocumentScreen:
         old = self.currentDoc.getWords()
         new = self.txt.get("1.0",'end-1c')
         
+        
         import re
         tabooWords = TabooWords.TabooWord.getAllTaboo()
         for w in tabooWords:
