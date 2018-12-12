@@ -400,7 +400,7 @@ class DocumentDBClient():
     def get_members(self, doc_id):
         return pickle.loads(get_proxy().get_members(doc_id).data)
 
-    def push_updates(self, deltas):
+    def push_updates(self, doc_id, deltas):
         locations = []
         contents = []
         lengths = []
@@ -414,7 +414,7 @@ class DocumentDBClient():
                 contents.append(d.string)
                 lengths.append(0)
         
-        return get_proxy().push_updates(locations, contents, lengths)
+        return get_proxy().push_updates(doc_id, locations, contents, lengths)
 
     def push_insert(self, doc_id, insert):
         return get_proxy().push_update(doc_id, insert.location, insert.string, 0)

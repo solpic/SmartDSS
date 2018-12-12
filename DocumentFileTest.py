@@ -251,7 +251,7 @@ class DocumentScreen:
         
         deltas = self.currentDoc.generateDeltas(old,new)
         self.currentDoc.words= new
-        doc_cli.push_updates(deltas)
+        doc_cli.push_updates(self.currentDoc.doc_id, deltas)
         doc_cli.show_all_updates()
         
         
