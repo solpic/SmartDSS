@@ -195,6 +195,7 @@ class DocumentScreen:
        
         print("Remove User Function , uname: {}".format(uname))
         off = "disabled"
+        self.currentDoc.removeMember(uname)
         self.allMembersMenu.entryconfigure(uname,state=off)
     #PostCond: The inputed Word is added to the DB of Taboo Words
     def addTabooWord(self):

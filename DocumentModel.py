@@ -50,7 +50,9 @@ class DocumentModel():
 
     def addMember(self, member):
         from DocumentDB import doc_cli
-        if doc_cli.add_member(self.doc_id,member):
+        print("doc_id:  {}   memeber:   {}".format(self.doc_id,member))
+
+        if doc_cli.add_member(self.doc_id,member[0]):
             self.memberList.append(member)
 
 
