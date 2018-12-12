@@ -14,8 +14,8 @@ class DocumentScreen:
         #self.userRank = doc_cli.getRank(self.currentUser)
         self.currentDoc= document
         # self.docMembers = document.getMembers()
-        #self.allUsers = doc_cli.get_all_sys_Users() #TODO: Server Call
-        self.allUsers = ["ARI","ME","JAS"]
+        self.allUsers = doc_cli.get_all_users() #TODO: Server Call
+        #self.allUsers = ["ARI","ME","JAS"]
         self.makeScreen()
 
 
@@ -37,7 +37,7 @@ class DocumentScreen:
         # All Following Menus are submenus of the self.mainMenu object
         # Back Menu
         backMenu = Menu(self.mainMenu,tearoff=0)
-        backMenu.add_command(label="GO BACK",command=self.undo)#command ~~ openHomePg()
+        backMenu.add_command(label="Undo",command=self.undo)#command ~~ openHomePg()
         self.mainMenu.add_cascade(label="<--",menu=backMenu)
 
         # Complain Menu
@@ -61,7 +61,16 @@ class DocumentScreen:
             delta.show()
             self.pastVerMenu.add_command(label = delta.show() + "NUM: " + str(num) )
             num+=1
+        #optMenu.add_command(label="Set Privacy Level")
+        privMenu = Menu(optMenu)
+        privMenu .add_command(label="Current Privacy Level: "+ self.currentDoc.privacyLevel)
+        privMenu.add_command(label="Set Private",command=lambda i= "private" :self.currentDoc.setPriv(i))
+        privMenu.add_command(label="Set Public",command=lambda i = "public" : self.currentDoc.setPriv(i))
+        privMenu.add_command(label="Set Shared", command=lambda i= "shared" : self.current.setPriv(i))
+        privMenu.add_command(label= "Set Restricted",command=lambda i ="restricted" : self.current.setPriv(i))
+        optMenu.add_cascade(label="Set Privacy Level",menu=privMenu)
         optMenu.add_cascade(label="Load Past Versions", menu=self.pastVerMenu)#command = ???? Something to view previous docs
+        
         self.mainMenu.add_cascade(label="Document Options", menu=optMenu)
         
         # Membership Options Menu

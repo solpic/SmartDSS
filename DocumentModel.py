@@ -27,7 +27,13 @@ class DocumentModel():
         print("Locked: "+str(self.locked))
         print("Contents: "+self.contents)
         print("ID: "+str(self.doc_id))
-        
+    
+    def setPriv(self,p):
+        print("Priv" + p)
+        from DocumentDB import doc_cli
+        if (doc_cli.setPrivacyLevel(self.doc_id,p)):
+            self.privacyLevel = p
+    
     def genVersionNumber(self):
     # TODO: How does this work?/ What does it do?
         return 5
