@@ -6,8 +6,8 @@ from DocumentScreenTester import user
 import ProcessMember
 import ProcessTabooWord
 import ProcessComplaints
-import createfilepopup
-import creadoc
+#import createfilepopup
+
 
 import DocumentFileTest
 from DocumentScreenTester import user
@@ -39,6 +39,11 @@ class UserPg():
         self.Interest1 = doc_cli.getInterest1(username)
         self.Interest2 = doc_cli.getInterest2(username)
         self.Interest3 = doc_cli.getInterest3(username)
+        self.recentDoc1tite = "Document 1"
+        self.recentDoc1tite = "Document 1"
+        self.recentDoc1tite = "Document 1"
+        self.userDocs = []
+        self.getDocs()
         self.createWidget()
 
     def createWidget(self):
@@ -60,7 +65,7 @@ class UserPg():
         frame8.pack(side=LEFT, fill=X)
 
         UsernameText = self.user
-        Label(frame2, text=UsernameText + " " + self.rank, font=('Ariel', 30), fg="medium blue",
+        Label(frame2, text=UsernameText + "   " + self.rank, font=('Ariel', 34), fg="medium blue",
               background="white").grid(row=0, column=0, padx=10, pady=20)
         #  Label(frame2, text="", width =800).grid(row=0,column=1)
 
@@ -80,17 +85,11 @@ class UserPg():
 
         Button(frame3, text="create document", font=('Ariel', 30), fg="medium blue", background="white",
                command=self.createnewdoc).grid(row=0, column=0, padx=10, pady=10)
-        Button(frame3, text="recent doc 1", font=('Ariel', 30), fg="medium blue", background="white", width=15).grid(
-            row=0, column=1, padx=20)
-        Button(frame3, text="doc 2", font=('Ariel', 30), fg="medium blue", background="white", width=15).grid(row=0,
-                                                                                                              column=2,
-                                                                                                              padx=10)
-        Button(frame3, text=" doc 3", font=('Ariel', 30), fg="medium blue", background="white", width=15).grid(row=0,
-                                                                                                               column=3,
-                                                                                                               padx=10)
+        Button(frame3, text=self.userDocs[0][0], command = self.openDoc1, font=('Ariel', 30), fg="medium blue", background="white", width=15).grid( row=0, column=1, padx=20)
+        Button(frame3, text=self.userDocs[1][0], command = self.openDoc2, font=('Ariel', 30), fg="medium blue", background="white", width=15).grid(row=0,column=2, padx=10)
+        Button(frame3, text=self.userDocs[2][0], command= self.openDoc3, font=('Ariel', 30), fg="medium blue", background="white", width=15).grid(row=0, column=3,  padx=10)
 
-        Label(frame6, text="Search Members by Username", font=('Ariel', 16), fg="medium blue", width=24).grid(row=0,
-                                                                                                              column=0)
+        Label(frame6, text="Search Members by Username", font=('Ariel', 16), fg="medium blue", width=24).grid(row=0, column=0)
         Entry(frame6, textvariable=self.memberName, width=50).grid(row=1, column=0, sticky=E, padx=10)
         simg = PhotoImage(file="images.gif")
         searchpic1 = Button(frame6, image=simg, command=self.memSearch)
@@ -124,7 +123,7 @@ class UserPg():
         for entry in self.documentSearch:
             print("entry", entry)
         Button(frame7, text="Open Document", font=('Ariel', 24), fg="medium blue", width=16, background="white",
-               command=self.opendoc).grid(row=3, column=0, pady=5)
+               command=self.opendocument).grid(row=3, column=0, pady=5)
         Label(frame7, height=12).grid(row=5, column=0)
 
         if self.rank == 'SU':
@@ -174,6 +173,21 @@ class UserPg():
             print("search", entry)
         self.docvar.set(names)
 
+    def getDocs(self):
+        docs = doc_cli.get_all_documents()
+        names = []
+        for doc in docs:
+            if self.user in doc.owner:
+                entry = (doc.docName, doc.owner, doc.versionNumber)
+                self.userDocs.append(entry)
+        for doc in docs:
+            if self.user not in doc.owner:
+                entry = (doc.docName, doc.owner, doc.versionNumber)
+                self.userDocs.append(entry)
+        for entry in self.userDocs:
+            print("results", entry)
+
+
     def createnewdoc(self):
         print("new document")
         from tkinter import simpledialog
@@ -184,7 +198,7 @@ class UserPg():
         doc_cli.get_document(doc_name, self.user, versionNo)
         DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
 
-    def opendoc(self):
+    def opendocument(self):
         item = self.searchResultDocs.curselection()
         idx = item[0]
         docdetail = self.documentSearch[idx]
@@ -192,6 +206,27 @@ class UserPg():
         usern = docdetail[1]
         versionNo = docdetail[2]
         DocumentFileTest.DocumentScreen(user(usern), doc_cli.get_document(document, usern, versionNo))
+
+    def openDoc1(self):
+        documentname = self.userDocs[0][0]
+        usern = self.userDocs[0][1]
+        versionNo = self.userDocs[0][2]
+        doc_cli.get_document(documentname, self.user, versionNo)
+        DocumentFileTest.DocumentScreen(user(usern), doc_cli.get_document(documentname, self.user, versionNo))
+
+    def openDoc2(self):
+        documentname = self.userDocs[1][0]
+        usern = self.userDocs[1][1]
+        versionNo = self.userDocs[1][2]
+        doc_cli.get_document(documentname, self.user, versionNo)
+        DocumentFileTest.DocumentScreen(user(usern), doc_cli.get_document(documentname, self.user, versionNo))
+
+    def openDoc3(self):
+        documentname = self.userDocs[2][0]
+        usern = self.userDocs[2][1]
+        versionNo = self.userDocs[2][2]
+        doc_cli.get_document(documentname, self.user, versionNo)
+        DocumentFileTest.DocumentScreen(user(usern), doc_cli.get_document(documentname, self.user, versionNo))
 
     def processApl(self):
         ProcessMember.MemberApplication.main(self)
