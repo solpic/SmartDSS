@@ -251,6 +251,11 @@ class DocumentScreen:
 
     def submitChanges(self):
         from DocumentDB import doc_cli
+        print("LISTENTO ME: "+self.currentDoc.docName+", "+self.currentUser.getUserName())
+        doc = doc_cli.get_document(self.currentDoc.docName, self.currentDoc.owner, 0)
+        if doc.owner!=self.currentUser.getUserName() and doc.locked==1:
+            self.pullChanges()
+            return
         old = self.currentDoc.getWords()
         new = self.txt.get("1.0",'end-1c')
         
