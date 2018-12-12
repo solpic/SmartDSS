@@ -9,6 +9,7 @@ class createfileinput():
         root = self.root = Toplevel()
         self.documentName = StringVar()
         self.documentPrivacyLevel = StringVar()
+        self.sts = StringVar()
         self.privacyLevel = 'public'
         self.privacyLevels = ['public', 'restricted', 'shared', 'private']
         self.createWidgets()
@@ -30,13 +31,15 @@ class createfileinput():
         Button(frame1, text="Cancel", command = self.quit).grid(row=5, column=1, pady=2)
 
         frame1.pack()
+        Label(self.root, textvariable=self.sts).pack()
 
     def createdoc(self):
-        name = self.documentName
+        name = self.documentName.get()
         if name == "":
-            messagebox.showerror("Error", "Please enter a name for the document")
+            self.sts.set("Please enter a title")
         else:
             privacyLevel = self.documentPrivacyLevel.get()
+            self.root.destroy()
             return name, privacyLevel
 
     def quit(self):
