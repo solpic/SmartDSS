@@ -70,7 +70,6 @@ class DocumentScreen:
         print("Deltas Length: {}".format(len(deltas)))
         for delta in deltas:
             print("Adding Restore Points")
-            delta.show()
             self.pastVerMenu.add_command(label = delta.show() + "NUM: " + str(num) )
             num+=1
         #optMenu.add_command(label="Set Privacy Level")
@@ -252,7 +251,6 @@ class DocumentScreen:
         deltas = self.currentDoc.generateDeltas(old,new)
         self.currentDoc.words= new
         doc_cli.push_updates(self.currentDoc.doc_id, deltas)
-        doc_cli.show_all_updates()
         
         
         self.pullChanges()
@@ -280,11 +278,9 @@ class DocumentScreen:
                 command = lambda k = i, d=self.currentDoc.deltaLog:self.currentDoc.sRec(k,d))
     def pullChanges(self):
         from DocumentDB import doc_cli
-        doc_cli.show_all_updates()
         oldDeltaList = self.currentDoc.deltaLog
         deltaList= doc_cli.get_updates(self.currentDoc.doc_id,0)
-        for i in deltaList:
-            i.show()
+        
         self.currentDoc.reconstruct(5,deltaList)
         self.refreshText()
         if len(deltaList)>0:

@@ -405,11 +405,11 @@ class DocumentDBClient():
         contents = []
         lengths = []
         for d in deltas:
-            if(isinstance(delta,DeltaObjects.Delete)):
+            if(isinstance(d,DeltaObjects.Delete)):
                 locations.append(d.location)
                 contents.append("")
                 lengths.append(d.length)
-            if(isinstance(delta,DeltaObjects.Insert)):
+            if(isinstance(d,DeltaObjects.Insert)):
                 locations.append(d.location)
                 contents.append(d.string)
                 lengths.append(0)
