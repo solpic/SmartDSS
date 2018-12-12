@@ -261,16 +261,17 @@ class DocumentDBServer():
         self.c.execute("SELECT locked FROM documents WHERE name=? AND owner=? AND version=?", (name, user, version,))
         return self.c.fetchone()[0]
 
-    def push_update(self, doc_id, location, contents, length):
+    def push_updates(self, doc_id, location, contents, length):
         # Lock document (in database), not to be confused with the metadata lock
         lck = self.locks[doc_id]
         lck.acquire()
         success = True
         try:
-            count = self.c.execute("SELECT COUNT(*) FROM updates WHERE doc_id=?", (doc_id,)).fetchone()[0]
-            self.c.execute('''INSERT INTO updates (doc_id, position, length, contents, id)
-                                    VALUES (?, ?, ?, ?, ?)''', (doc_id, location, length, \
-                                                                contents, count + 1,))
+            for i in range(0, len(location)):
+                count = self.c.execute("SELECT COUNT(*) FROM updates WHERE doc_id=?", (doc_id,)).fetchone()[0]
+                self.c.execute('''INSERT INTO updates (doc_id, position, length, contents, id)
+                                        VALUES (?, ?, ?, ?, ?)''', (doc_id, location[i], length[i], \
+                                                                    contents[i], count + 1,))
         finally:
             lck.release()
 
@@ -285,7 +286,7 @@ class DocumentDBServer():
         return True
 
     def get_members(self, doc_id):
-        self.c.execute("SELECT member FROM members WHERE doc_id=? ORDER BY id ASC", (doc_id,))
+        self.c.execute("SELECT member FROM members WHERE doc_id=?", (doc_id,))
         res = []
         for row in self.c.fetchall():
             res.append(row[0])
@@ -398,6 +399,22 @@ class DocumentDBClient():
 
     def get_members(self, doc_id):
         return pickle.loads(get_proxy().get_members(doc_id).data)
+
+    def push_updates(self, doc_id, deltas):
+        locations = []
+        contents = []
+        lengths = []
+        for d in deltas:
+            if(isinstance(delta,DeltaObjects.Delete)):
+                locations.append(d.location)
+                contents.append("")
+                lengths.append(d.length)
+            if(isinstance(delta,DeltaObjects.Insert)):
+                locations.append(d.location)
+                contents.append(d.string)
+                lengths.append(0)
+        
+        return get_proxy().push_updates(doc_id, locations, contents, lengths)
 
     def push_insert(self, doc_id, insert):
         return get_proxy().push_update(doc_id, insert.location, insert.string, 0)
