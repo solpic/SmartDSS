@@ -52,6 +52,7 @@ class DocumentModel():
         from DocumentDB import doc_cli
         if doc_cli.add_member(self.doc_id,member):
             self.memberList.append(member)
+            
 
     def removeMember(self,member):
         from DocumentDB import doc_cli

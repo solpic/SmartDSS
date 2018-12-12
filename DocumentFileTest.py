@@ -18,6 +18,7 @@ class DocumentScreen:
         self.currentDoc= document
         # self.docMembers = document.getMembers()
         self.allUsers = doc_cli.get_all_users() #TODO: Server Call
+        self.allMembers = doc_cli.get_members(self.currentDoc.doc_id)
         #self.allUsers = ["ARI","ME","JAS"]
         
         
@@ -97,7 +98,7 @@ class DocumentScreen:
         self.allUserMenu = Menu(self.updateMembersMenu) #For Removing Members
         self.allMembersMenu.add_command(label="All Members Menu")
 
-        for member in self.allUsers:
+        for member in self.allMembers:
             self.allMembersMenu.add_command(label=member,command=lambda i= member: self.removeUser(i))
         self.allUserMenu = Menu(self.updateMembersMenu)
         self.allUserMenu.add_command(label="All Users Menu")
