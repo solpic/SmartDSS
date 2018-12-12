@@ -123,17 +123,17 @@ class DocumentModel():
         return cleanDeltaLog
     
     def reconstruct(self,num,deltaLog):
-        print("Begin reconstruct")
+        #print("Begin reconstruct")
         tmp = 0
         tmpStringOld = self.words
         self.words="" #NOTE:This reset might be causing issues. It basically makes reconstruct from null
         for delta in deltaLog:
             tmpString = self.words
             # Insert
-            print("Applying delta: ")
-            delta.show()
-            print("Initial: ")
-            print(self.words)
+            #print("Applying delta: ")
+            #delta.show()
+            #print("Initial: ")
+            #print(self.words)
             if (isinstance(delta,DeltaObjects.Insert)):
                 # string from 0 position + Insert Contents + rest of string
                 backHalf = tmpString[0:delta.location]
@@ -144,11 +144,11 @@ class DocumentModel():
                 frontHalf = tmpString[(delta.location+delta.length):]
                 self.words = backHalf+frontHalf
             tmp= tmp+1
-            print("Final: ")
-            print(self.words)
-            delta.show()
-        print("OLD: {} NEW: {}".format(tmpStringOld,self.words))
-        print("\n\n")
+            #print("Final: ")
+            #print(self.words)
+            #delta.show()
+        #print("OLD: {} NEW: {}".format(tmpStringOld,self.words))
+        #print("\n\n")
 
                 
 
