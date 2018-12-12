@@ -186,6 +186,11 @@ class UserPg():
                 self.userDocs.append(entry)
         for entry in self.userDocs:
             print("results", entry)
+        
+        i = len(self.userDocs)
+        while i<3:
+            self.userDocs.append(["No document"])
+            i = i + 1
 
 
     def createnewdoc(self):

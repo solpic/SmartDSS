@@ -34,4 +34,4 @@ def run_server(host, port):
         
 if __name__ == '__main__':
     #On AWS INSTANCE
-    run_server("0.0.0.0", 9000)
+    run_server("0.0.0.0", 80)
