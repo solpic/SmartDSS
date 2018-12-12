@@ -32,9 +32,9 @@ class UserPg():
         self.invar = StringVar(value=self.interestsSearch)
         self.var = StringVar(value=self.memberSearch)
         self.docvar = StringVar(value= self.documentSearch)
-        self.Interest1 = self.UserDetailService.getInterest1(username)
-        self.Interest2 = self.UserDetailService.getInterest2(username)
-        self.Interest3 = self.UserDetailService.getInterest3(username)
+        self.Interest1 = doc_cli.getInterest1(username)
+        self.Interest2 = doc_cli.getInterest2(username)
+        self.Interest3 = doc_cli.getInterest3(username)
         self.createWidget()
 
     def createWidget(self):
@@ -167,10 +167,10 @@ class UserPg():
         doc_name = simpledialog.askstring("Document Name", "Name of new document?")
         versionNo = 0
         init_contents =""
-        doc_name, privacy_level = createfilepopup.createfileinput.main(self)
+        #doc_name, privacy_level = createfilepopup.createfileinput.main(self)
         doc_cli.create_document(doc_name, self.user, init_contents)
-        doc_cli.get_document(doc_name, self.user, versionNo)
-        DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
+        #doc_cli.get_document(doc_name, self.user, versionNo)
+        #DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
 
     def opendoc(self):
         item = self.searchResultDocs.curselection()
