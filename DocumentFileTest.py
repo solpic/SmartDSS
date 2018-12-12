@@ -87,7 +87,8 @@ class DocumentScreen:
         self.tabooMenu = Menu(self.mainMenu)
         self.tabooWords = TabooWords.TabooWord.getAllTaboo() 
         for tWord in self.tabooWords:
-            self.tabooMenu.add_command(label=tWord)
+            if tWord[1]==1:
+                self.tabooMenu.add_command(label=tWord[0])
         self.tabooMenu.add_separator()
         self.tabooMenu.add_command(label="Add Taboo Word", command=self.addTabooWord)# command ~~ addTabooWord
         self.tabooMenu.add_separator()
@@ -155,9 +156,14 @@ class DocumentScreen:
     def addUser(self,user):
         print("Add User To Document Function")
         self.currentDoc.addMember(user)
+        self.allMembersMenu.add_command(label=user, command=lambda i= user: self.removeUser(i))
+
     def removeUser(self,uname):
        
         print("Remove User Function , uname: {}".format(uname))
+        off = "disabled"
+        self.allMembersMenu.entryconfigure(uname,state=off)
+        '''
         x=0
         
         mem = self.currentDoc.getMembers()
@@ -172,14 +178,17 @@ class DocumentScreen:
         self.allMembersMenu.delete(x)
         self.allUserMenu.destroy
         self.currentDoc.removeMember(delmem)
+        '''
     #PostCond: The inputed Word is added to the DB of Taboo Words
     def addTabooWord(self):
         from DocumentDB import doc_cli
 
         uInput = tkSimpleDialog.askstring("Add Taboo Word","Word?")
         #TabooWords.TabooWord.addTabooWord(uInput)
-        if doc_cli.add_taboo_word(uInput):
-            self.tabooMenu.add_command(label=uInput)
+        tWords = TabooWords.TabooWord.getAllTaboo()
+        for word in twords:
+            if word[1]==1:
+                self.tabooMenu.add_command(label=uInput)
         #self.tabooMenu.pack()
 
     #TODO: Changing other GUI elements as well when its locked

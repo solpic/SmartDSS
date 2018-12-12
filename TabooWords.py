@@ -20,8 +20,8 @@ class TabooWord:
 
     @staticmethod
     def getAllTaboo():
-        #TODO: Database Call to get all words
-        return ["This", "should", "have all the words from the servrer"]
+        from DocumentDB import doc_cli
+        return doc_cli.get_taboo_words()
         
     def show(self):
         print("Word: "+self.text+", Status: "+str(self.status))
