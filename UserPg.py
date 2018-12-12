@@ -160,11 +160,11 @@ class UserPg():
 
     def createnewdoc(self):
         print("new document")
-        doc_name = "New Document Test"
+
         versionNo = 0
         init_contents =""
-        createfilepopup.createfileinput.main(self)
-        doc_cli.create_document( doc_name, self.user, init_contents)
+        doc_name, privacy_level = createfilepopup.createfileinput.main(self)
+        doc_cli.create_document(doc_name, self.user, init_contents)
         doc_cli.get_document(doc_name, self.user, versionNo)
         DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
 
