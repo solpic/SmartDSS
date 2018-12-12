@@ -67,11 +67,11 @@ class DocumentScreen:
         self.pastVerMenu = Menu(optMenu)
         num = 0
         #deltas = doc_cli.get_updates(self.currentDoc.doc_id,)
-        deltas = self.currentDoc.deltaLog
-        print("Deltas Length: {}".format(len(deltas)))
-        for delta in deltas:
+        versions = doc_cli.get_versions(self.currentDoc.doc_id)
+        i = 0
+        for v in versions:
             print("Adding Restore Points")
-            self.pastVerMenu.add_command(label = delta.show() + "NUM: " + str(num) )
+            self.pastVerMenu.add_command(label = str(i)+v[0], command=lambda i=v[1]: self.loadVersion(i) )
             num+=1
         #optMenu.add_command(label="Set Privacy Level")
         self.privMenu = Menu(optMenu)
@@ -237,8 +237,20 @@ class DocumentScreen:
     def undo(self):
         print("Go back one delta")
     
+    def loadVersion(self, update):
+        self.pullChanges(update)
+        self.lastChange = -1
+        self.submitChanges()
+    
     def createNewVersion(self):
-        print("Create a New Version")
+        from DocumentDB import doc_cli
+        self.submitChanges()
+        print("Create a New Version at "+str(self.lastChange))
+        import datetime
+        dt = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        doc_cli.create_version(self.currentDoc.doc_id, dt, self.lastChange)
+        self.pastVerMenu.add_command(label = dt, command=lambda i=self.lastChange: self.loadVersion(i))
+        
     def saveAsNew(self):
         print("Save as New Version")
 
@@ -281,11 +293,26 @@ class DocumentScreen:
             if(i>len(oldDeltas)):
                 self.pastVerMenu.add_command(label= newDeltas[i].show() + "NUM: " + str(i), 
                 command = lambda k = i, d=self.currentDoc.deltaLog:self.currentDoc.sRec(k,d))
-    def pullChanges(self):
+    def pullChanges(self, last=-1):
+        print("PUlling until version id "+str(last))
         from DocumentDB import doc_cli
         oldDeltaList = self.currentDoc.deltaLog
         deltaList= doc_cli.get_updates(self.currentDoc.doc_id,0)
-        
+        actualLast = -1
+        if last>=0:
+            i = 0
+            actualLast = 0
+            while i<len(deltaList):
+                if deltaList[i].u_id==last:
+                    actualLast = i
+                    i = len(deltaList)
+                i = i + 1
+                    
+            print("Version diff is "+str(len(deltaList)-actualLast))
+            print(len(deltaList))
+            deltaList = deltaList[0:actualLast]
+            
+        print(len(deltaList))
         self.currentDoc.reconstruct(5,deltaList)
         self.refreshText()
         if len(deltaList)>0:
@@ -293,5 +320,5 @@ class DocumentScreen:
         else:
             self.lastChange = -1
 
-        self.addDeltaToDisplay(oldDeltaList,deltaList)
+        #self.addDeltaToDisplay(oldDeltaList,deltaList)
 
