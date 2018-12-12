@@ -78,12 +78,21 @@ class DocumentDBServer():
             print(entry)
         return pickle.dumps(self.SearchList)
 
+    def removeUser(self, username):
+        user = (username,)
+        self.c.execute('DELETE FROM users WHERE username= ? ', user)
+        self.conn.commit()
+        self.c.execute('SELECT * FROM users WHERE username= ? ', user)
+        return True
 
     def setUser(self):
-        user = (self.username,)
-        self.c.execute('SELECT password FROM users WHERE username= ? ', user)
-        # the SU sets the application type to OU
-        return None
+        user = (username,)
+        self.c.execute('UPDATE users SET type = "OU" WHERE username= ? ', user)
+        self.conn.commit()
+        self.c.execute('SELECT * FROM users WHERE username= ? ', user)
+        usern = self.c.fetchone()
+        print(usern)
+        return True
 
     # TODO: Requested Features from Arik:
     def getRank(self, username):
@@ -408,6 +417,9 @@ class DocumentDBClient():
         
     def setUser(self, username):
         return get_proxy().setUser(username)
+        
+    def removeUser(self, username):
+        return get_proxy().removeUser(username)
 
     def getRank(self, username):
         return get_proxy().getRank(username)
