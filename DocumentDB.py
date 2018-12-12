@@ -222,7 +222,7 @@ class DocumentDBServer():
         if self.c.fetchone()[0]=="SU":
             self.c.execute("SELECT * FROM documents")
         else:
-            self.c.execute("SELECT * FROM documents WHERE privacy=? OR PRIVACY=? OR owner=? OR doc_id IN (SELECT doc_id FROM members WHERE member=?)", \
+            self.c.execute("SELECT * FROM documents WHERE privacy=? OR PRIVACY=? OR owner=? OR id IN (SELECT doc_id FROM members WHERE member=?)", \
                         ("public", "restricted", username, username, ))
         
         
