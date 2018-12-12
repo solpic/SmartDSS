@@ -4,7 +4,7 @@ import Login2
 import SignUp
 import sqlite3
 import Users1
-from DocumentDB import doc_cli
+#from DocumentDB import doc_cli
 
 class HomePg():
     def __init__(self, parent):
