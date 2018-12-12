@@ -41,11 +41,6 @@ class Login():
         passwordA = doc_cli.getPassword(username)[0]
         passwordN = password
 
-        if (username == NONE):
-            print("Error no username")
-        if (passwordA == passwordN):
-            self.showLoged(username)
-
         if username == "":
             messagebox.showerror("Error", "Please enter a username and password")
         else:
@@ -54,7 +49,6 @@ class Login():
             if rank == 'GU':
                 messagebox.showwarning("Warning",
                                        "Membership Application has not yet been approved so cannot log on")
-
             elif (passwordA == passwordN):
                 self.showLoged(username)
             else:

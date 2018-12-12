@@ -4,7 +4,10 @@ import Users1
 import DocumentFileTest
 from DocumentScreenTester import user
 import ProcessMember
+import ProcessTabooWord
+import ProcessComplaints
 import createfilepopup
+import creadoc
 
 import DocumentFileTest
 from DocumentScreenTester import user
@@ -125,9 +128,9 @@ class UserPg():
         Label(frame7, height=12).grid(row=5, column=0)
 
         if self.rank == 'SU':
-            Button(frame8, text="Process Complaints", font=('Ariel', 24), fg="medium blue", background="white").grid(
+            Button(frame8, text="Process Complaints", font=('Ariel', 24), fg="medium blue", background="white", command = self.processComplaint).grid(
                 row=1, column=1, padx=30, pady=40, sticky=E)
-            Button(frame8, text="Process Taboo Words", font=('Ariel', 24), fg="medium blue", background="white").grid(
+            Button(frame8, text="Process Taboo Words", font=('Ariel', 24), fg="medium blue", background="white", command = self.processTaboo).grid(
                 row=3, column=1, padx=30, pady=40, sticky=E)
             Button(frame8, text="Process Applications", font=('Ariel', 24), fg="medium blue", background="white",
                    command=self.processApl).grid(row=5, column=1, padx=30, pady=40, sticky=E)
@@ -145,14 +148,14 @@ class UserPg():
 
     def memSearch(self):
         user = self.memberName.get()
-        self.memberSearch = self.UserDetailService.searchUser(user)
+        self.memberSearch = doc_cli.searchUser(user)
         for entry in self.memberSearch:
             print("bottom entry", entry)
         self.var.set(self.memberSearch)
 
     def intSearch(self):
         user = self.memberInt.get()
-        self.interestsSearch = self.UserDetailService.searchUserInt(user)
+        self.interestsSearch = doc_cli.searchUserInt(user)
         for entry in self.interestsSearch:
             print("bottom entry", entry)
         self.invar.set(self.interestsSearch)
@@ -177,10 +180,9 @@ class UserPg():
         doc_name = simpledialog.askstring("Document Name", "Name of new document?")
         versionNo = 0
         init_contents = ""
-        # doc_name, privacy_level = createfilepopup.createfileinput.main(self)
         doc_cli.create_document(doc_name, self.user, init_contents)
-        # doc_cli.get_document(doc_name, self.user, versionNo)
-        # DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
+        doc_cli.get_document(doc_name, self.user, versionNo)
+        DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
 
     def opendoc(self):
         item = self.searchResultDocs.curselection()
@@ -193,6 +195,12 @@ class UserPg():
 
     def processApl(self):
         ProcessMember.MemberApplication.main(self)
+
+    def processTaboo(self):
+        ProcessTabooWord.ProcessTabooWord.main(self)
+
+    def processComplaint(self):
+        ProcessComplaints.ProcessComplaints.main(self)
 
     def main(self, username):
         root = Toplevel()

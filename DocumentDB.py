@@ -131,6 +131,13 @@ class DocumentDBServer():
         print(Interest3)
         return Interest3
 
+    def getMemberAppl(self):
+        type = ("GU",)
+        self.membershipList = self.c.execute('SELECT username, FName, LName, Interest1, Interest2, Interest3, type FROM t WHERE type = ?', type).fetchall()
+        for entry in self.membershipList:
+            print(entry)
+        return self.membershipList
+
     def create_tables(self, del_old=True):
         if del_old:
             self.c.execute('DROP TABLE IF EXISTS documents')
@@ -299,8 +306,8 @@ class DocumentDBServer():
         self.c.execute("SELECT * FROM complaints")
         return pickle.dumps(self.c.fetchall())
 
-    def delete_complaint(self, user, complaint):
-        self.c.execute("DELETE FROM complaints WHERE user=? AND complaint=?", (user, complaint,))
+    def delete_complaint(self, complaint):
+        self.c.execute("DELETE FROM complaints WHERE complaint=?", (complaint,))
         return True
 
     def add_complaint(self, user, complaint):
@@ -447,6 +454,9 @@ class DocumentDBClient():
     def getInterest3(self, username):
         return get_proxy().getInterest3(username)
 
+    def getMemberAppl(self):
+        return pickle.loads(get_proxy().getMemberAppl().data)
+
 
 doc_cli = DocumentDBClient()
 
@@ -454,7 +464,6 @@ doc_cli = DocumentDBClient()
 def main():
     get_proxy().create_tables()
     doc_cli.createUSer("me", "me", "me", "me", "python", "audio", "math", 1, "SU")
-
 
 if __name__ == '__main__':
     main()
