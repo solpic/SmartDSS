@@ -1,9 +1,10 @@
 from tkinter import*
 from DocumentDB import doc_cli
 import Users1
-#import DocumentFileTest
-#from DocumentScreenTester import user
+import DocumentFileTest
+from DocumentScreenTester import user
 import ProcessMember
+import createfilepopup
 
 class UserPg():
 
@@ -162,9 +163,10 @@ class UserPg():
         doc_name = "New Document Test"
         versionNo = 0
         init_contents =""
+        createfilepopup.createfileinput.main(self)
         doc_cli.create_document( doc_name, self.user, init_contents)
         doc_cli.get_document(doc_name, self.user, versionNo)
-       # DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
+        DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
 
     def opendoc(self):
         item = self.searchResultDocs.curselection()
@@ -173,7 +175,7 @@ class UserPg():
         document = docdetail[0]
         usern = docdetail[1]
         versionNo = docdetail[2]
-        #DocumentFileTest.DocumentScreen(user(usern), doc_cli.get_document(document, usern, versionNo))
+        DocumentFileTest.DocumentScreen(user(usern), doc_cli.get_document(document, usern, versionNo))
 
     def processApl(self):
         ProcessMember.MemberApplication.main(self)

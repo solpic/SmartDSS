@@ -4,6 +4,7 @@ import threading
 import time
 import pickle #serialization stuff
 import DeltaObjects
+import math
 import TabooWords
 
 # DocumentDBServer runs on the server and handles DB stuff
@@ -20,6 +21,100 @@ class DocumentDBServer():
         for row in self.c.fetchall():
             self.locks[row[0]] = threading.Lock()
     
+    def createUSer(self, username, password, Fname, Lname, Interest1, Interest2, Interest3, joindate, Application ):
+        self.c.execute("INSERT INTO users VALUES (?,?,?,?,?,?,?,?,?)", (username, password, Fname, Lname, Interest1, Interest2,
+                                                               Interest3, joindate, Application))
+        self.conn.commit()
+        for row in self.c.execute('SELECT * FROM users'):
+            print(row)
+        
+        return True
+
+    def getUsername(self, username):
+        user = (username,)
+        self.c.execute('SELECT username FROM users WHERE username= ? ', user)
+        usern = self.c.fetchone()
+        return usern
+
+    def getPassword(self, username):
+        print("Getting password for: "+username)
+        user = (username,)
+        self.c.execute('SELECT password FROM users WHERE username= ? ', user)
+        passw = self.c.fetchone()
+        print(passw)
+        print(passw[0])
+        return passw
+
+    def searchUserInt(self, interest):
+        if len(interest) <=3:
+            interest = interest
+        else:
+            partialWordCount = math.floor(len(interest)/2)
+            partialIntSearch = interest[0:partialWordCount]
+            interest = partialIntSearch
+        self.conn.row_factory = lambda cursor, row: row[0]
+        d = self.conn.cursor()
+        self.SearchInterestList = d.execute('SELECT username FROM users WHERE Interest1 LIKE ?' , ('%'+ interest + '%',)).fetchall()
+        self.SearchInterestList.extend(d.execute('SELECT username FROM users WHERE Interest2 LIKE ?' , ('%'+ interest + '%',)).fetchall())
+        self.SearchInterestList.extend(d.execute('SELECT username FROM users WHERE Interest3 LIKE ?', ('%' + interest + '%',)).fetchall())
+        for entry in self.SearchInterestList:
+            print(entry)
+        return pickle.dumps(self.SearchInterestList)
+
+    def searchUser(self, username):
+        user = (username,)
+        self.conn.row_factory = lambda cursor, row: row[0]
+        d = self.conn.cursor()
+        self.SearchList = d.execute('SELECT username FROM users WHERE username = ?', user).fetchall()
+        for entry in self.SearchList:
+            print(entry)
+        return pickle.dumps(self.SearchList)
+
+    def searchtestUser(self, username):
+        user = (username,)
+        self.SearchList = self.c.execute('SELECT username, Interest1 FROM users WHERE username = ?', user).fetchall()
+        for entry in self.SearchList:
+            print(entry)
+        return pickle.dumps(self.SearchList)
+
+
+    def setUser(self):
+        user = (self.username,)
+        self.c.execute('SELECT password FROM users WHERE username= ? ', user)
+        # the SU sets the application type to OU
+        return None
+
+    # TODO: Requested Features from Arik:
+    def getRank(self, username):
+        user = (username,)
+        self.c.execute('SELECT type FROM users WHERE username= ? ', user)
+        rank = self.c.fetchone()[0]
+        print(rank)
+        return rank
+    #   Pre: Runs on a user instance
+    #   Post: returns the rank of the user instance as a string of "OU" "GU" or "SU"
+
+    def getInterest1(self, username):
+        user = (username,)
+        self.c.execute('SELECT Interest1 FROM users WHERE username= ? ', user)
+        Interest1 = self.c.fetchone()[0]
+        print(Interest1)
+        return Interest1
+
+    def getInterest2(self, username):
+        user = (username,)
+        self.c.execute('SELECT Interest2 FROM users WHERE username= ? ', user)
+        Interest2 = self.c.fetchone()[0]
+        print(Interest2)
+        return Interest2
+
+    def getInterest3(self, username):
+        user = (username,)
+        self.c.execute('SELECT Interest3 FROM users WHERE username= ? ', user)
+        Interest3 = self.c.fetchone()[0]
+        print(Interest3)
+        return Interest3
+    
     def create_tables(self, del_old=True):
         if del_old:
             self.c.execute('DROP TABLE IF EXISTS documents')
@@ -27,6 +122,7 @@ class DocumentDBServer():
             self.c.execute('DROP TABLE IF EXISTS members')
             self.c.execute('DROP TABLE IF EXISTS taboo')
             self.c.execute('DROP TABLE IF EXISTS complaints')
+            self.c.execute('DROP TABLE IF EXISTS users')
         
         # Document class/model definition
         self.c.execute('''CREATE TABLE documents
@@ -45,6 +141,9 @@ class DocumentDBServer():
                         
         self.c.execute('''CREATE TABLE taboo (word TEXT UNIQUE, status INTEGER)''')
         self.c.execute('''CREATE TABLE complaints (user TEXT, complaint TEXT)''')
+        self.c.execute('''CREATE TABLE users
+                            (username text NOT NULL PRIMARY KEY, password text, Fname text, Lname text, Interest1 text,
+                 Interest2 text, Interest3 text, joindate date, type text)''')
         self.conn.commit()
         return True
         
@@ -71,6 +170,12 @@ class DocumentDBServer():
         for row in self.c.fetchall():
             doc = self.make_document(row)
             doc.show()
+        return True
+        
+    def show_all_users(self):
+        self.c.execute("SELECT * FROM users")
+        for row in self.c.fetchall():
+            print("Username: "+row[0]+", Password: "+row[1])
         return True
         
     def show_all_updates(self):
@@ -185,6 +290,8 @@ class DocumentDBServer():
         
         
 class DocumentDBClient():
+    def show_all_users(self):
+        get_proxy().show_all_users()
     def make_document(self, row):
         from DocumentModel import DocumentModel
         doc = DocumentModel()
@@ -280,16 +387,46 @@ class DocumentDBClient():
     def add_complaint(self, user, complaint):
         return get_proxy().add_complaint(user, complaint)
         
+    def searchUserInt(self, interest):
+        return pickle.loads(get_proxy().searchUserInt(interest).data)
+
+    def searchUser(self, username):
+        return pickle.loads(get_proxy().searchUser(username).data)
+
+    def searchtestUser(self, username):
+        return pickle.loads(get_proxy().searchtestUser(username).data)
+    
+    def createUSer(self, username, password, Fname, Lname, Interest1, Interest2, Interest3, joindate, Application ):
+        return get_proxy().createUSer(username, password, Fname, Lname, Interest1, Interest2, Interest3, joindate, Application)
+
+    def getUsername(self, username):
+        return get_proxy().getUsername(username)
+
+    def getPassword(self, username):
+        return get_proxy().getPassword(username)
+        
+    def setUser(self, username):
+        return get_proxy().setUser(username)
+
+    def getRank(self, username):
+        return get_proxy().getRank(username)
+
+    def getInterest1(self, username):
+        return get_proxy().getInterest1(username)
+
+    def getInterest2(self, username):
+        return get_proxy().getInterest2(username)
+
+    def getInterest3(self, username):
+        return get_proxy().getInterest3(username)
+        
         
 doc_cli = DocumentDBClient()
         
 def main():
-    #get_proxy().create_tables()
-    doc_cli.delete_complaint("Fred", "Water sucks")
+    get_proxy().create_tables()
+    doc_cli.create_document("Poopy", "Fred", "")
     
-    complaints = doc_cli.get_complaints()
-    for c in complaints:
-        c.show()
     
 
 if __name__ == '__main__':

@@ -10,17 +10,18 @@ def return_square(num):
 
 def register_all_functions(server):
     #import Users1
-    
+    db = DocumentDBServer()
     server.register_function(return_square)
     server.register_instance(DocumentDBServer())
-    #server.register_instance(Users1.Users())
+    #from Users1 import Users
+    #server.register_instance(Users(db.conn, db.c))
     
     
 # Set up logging
 def run_server(host, port):
     logging.basicConfig(level=logging.DEBUG)
 
-    server = SimpleXMLRPCServer((host, port), logRequests=True)
+    server = SimpleXMLRPCServer((host, port), logRequests=True, allow_none=True)
         
     register_all_functions(server)
 
@@ -31,8 +32,5 @@ def run_server(host, port):
         print('Exiting')
         
         
-def main():
-    run_server("localhost", 9000)
-
 if __name__ == '__main__':
-    main()
+    run_server("localhost", 9000)
