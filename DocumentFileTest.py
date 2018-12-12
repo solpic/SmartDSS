@@ -185,8 +185,11 @@ class DocumentScreen:
         self.txt.insert(END,self.currentDoc.words)
     def addUser(self,user):
         print("Add User To Document Function")
+        print(user)
+        print("SHOOOOOOOULD BE USER STRING:  " + user[0])
+        #print("TYYYYYYYYYYYYYPE:   "+ str(type(user[0])))
         self.currentDoc.addMember(user)
-        self.allMembersMenu.add_command(label=user, command=lambda i= user: self.removeUser(i))
+        self.allMembersMenu.add_command(label=user, command=lambda i= user[0]: self.removeUser(i))
 
     def removeUser(self,uname):
        
