@@ -56,25 +56,27 @@ class DocumentScreen:
         
         # Membership Options Menu
 
-        membOptMenu = Menu(self.mainMenu)
+        #membOptMenu = Menu(self.mainMenu)
         #membOptMenu.add_command(label="Update Member(s)")
 
-        self.updateMembersMenu = Menu(membOptMenu)
+        self.updateMembersMenu = Menu(self.mainMenu)
 
         
-        self.allMembersMenu = Menu(membOptMenu)
+        self.allMembersMenu = Menu(self.updateMembersMenu)
         self.allUserMenu = Menu(self.updateMembersMenu) #For Removing Members
-        membOptMenu.add_cascade(label="Update Members", menu=self.updateMembersMenu)
-        #TODO: Real Code for member in self.currentDoc.getMembers():
+        #membOptMenu.add_cascade(label="Update Members", menu=self.updateMembersMenu)
+        #TODO: Real Code:: for member in self.currentDoc.getMembers():
+        self.allMembersMenu.add_command(label="All Members Menu")
         for member in self.allUsers:
             self.allMembersMenu.add_command(label=member,command=lambda i= member: self.removeUser(i))
         self.allUserMenu = Menu(self.updateMembersMenu)
+        self.allUserMenu.add_command(label="All Users Menu")
         for user in self.allUsers:
             self.allUserMenu.add_command(label=user,command=lambda j = user: self.addUser(j))
-        self.updateMembersMenu.add_cascade(label="Remove Member", menu=self.allMembersMenu)
+        self.updateMembersMenu.add_cascade(label="Remove/View Members", menu=self.allMembersMenu)
         self.updateMembersMenu.add_cascade(label="All Registered System Users",menu=self.allUserMenu)
-        membOptMenu.add_cascade(label="View All Members", menu=self.allMembersMenu)
-        self.mainMenu.add_cascade(label="Membership Option",menu=membOptMenu)
+        #membOptMenu.add_cascade(label="View All Members", menu=self.allMembersMenu)
+        self.mainMenu.add_cascade(label="Membership Option",menu=self.updateMembersMenu)
 
         # Taboo Word Menu
         self.tabooMenu = Menu(self.mainMenu)
@@ -181,21 +183,23 @@ class DocumentScreen:
     def lockDocument(self):
         off="disabled"
         self.txt.config(state=off)
-        self.currentDoc.entryconfigure("Submit Changes",state=off)
-        self.currentDoc.entryconfigure("Pull Staged Changes",state=off)
+        self.changeMenu.entryconfigure("Submit Changes",state=off)
+        self.changeMenu.entryconfigure("Pull Staged Changes",state=off)
         self.currentDoc.lockDocument()
     def unlockDocument(self):
         on = "normal"
         self.txt.config(state=on)
-        self.currentDoc.entryconfigure("Submit Changes",state=on)
-        self.currentDoc.entryconfigure("Pull Staged Changes",state=on)
+        self.changeMenu.entryconfigure("Submit Changes",state=on)
+        self.changeMenu.entryconfigure("Pull Staged Changes",state=on)
         self.currentDoc.unlockDocument()
     def addDocComplaint(self):
         complaint=tkSimpleDialog.askstring("Enter Complaint against Document","Complaint:")
         self.currentDoc.addComplaint(complaint,self.currentUser)
     def addUserComplaint(self):
-        complaint=tkSimpleDialog.askstring("Enter Complain Against User")
-        self.currentUser.addComplaint()
+        from DocumentDB import doc_cli
+        complaint=tkSimpleDialog.askstring("Enter Complain Against User","Complaint")
+        doc_cli.add_complaint(self.currentUser,complaint)
+        
 
     def submitChanges(self):
         from DocumentDB import doc_cli

@@ -55,8 +55,11 @@ class DocumentModel():
                     del member[i]
     
     def addComplaint(self, complaint,currUser):
+        from DocumentDB import doc_cli
         complaintObj = Complaint.Complaint(complaint,currUser)
-        self.complaints.append(complaintObj)
+        complaintStr = complaint
+        if(doc_cli.add_complaint(self.owner,complaintStr)):
+            self.complaints.append(complaintObj)
         # TODO: Server Call to also add complaint to Document Table.
 
     def getMembers(self):
