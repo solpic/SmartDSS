@@ -3,6 +3,9 @@ import tkinter.simpledialog as tkSimpleDialog
 import TabooWords
 import DeltaObjects
 
+import time
+from threading import Thread
+
 '''Document View'''
 #TODO: Real User Class Integration
 class DocumentScreen:
@@ -16,8 +19,17 @@ class DocumentScreen:
         # self.docMembers = document.getMembers()
         self.allUsers = doc_cli.get_all_users() #TODO: Server Call
         #self.allUsers = ["ARI","ME","JAS"]
+        
+        
+        Thread(target=self.deferUpdates).start()
         self.makeScreen()
 
+    
+    def deferUpdates(self):
+        time.sleep(5)
+        print("AUTOPULLING")
+        self.submitChanges()
+        Thread(target=self.deferUpdates).start()
 
     def makeScreen(self):
         from DocumentDB import doc_cli
