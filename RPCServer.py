@@ -34,3 +34,9 @@ def run_server(host, port):
         
 if __name__ == '__main__':
     run_server("localhost", 9000)
+<<<<<<< HEAD
+=======
+    
+# On AWS INSTANCE
+# run_server("0.0.0.0", 9000)
+>>>>>>> 6fb4b233ff126f5bcb30709b73de6f3ee352fddf

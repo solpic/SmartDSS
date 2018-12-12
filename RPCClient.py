@@ -5,7 +5,7 @@ proxy = None
 # Init proxy
 def init_proxy():
     global proxy
-    proxy = ServerProxy('http://localhost:9000')
+    proxy = ServerProxy('http://34.194.232.47:80')
 
 def get_proxy():
     if proxy==None:

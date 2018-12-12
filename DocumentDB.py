@@ -22,6 +22,10 @@ class DocumentDBServer():
             self.locks[row[0]] = threading.Lock()
     
     def createUSer(self, username, password, Fname, Lname, Interest1, Interest2, Interest3, joindate, Application ):
+<<<<<<< HEAD
+=======
+        print("Creating user: "+username)
+>>>>>>> 6fb4b233ff126f5bcb30709b73de6f3ee352fddf
         self.c.execute("INSERT INTO users VALUES (?,?,?,?,?,?,?,?,?)", (username, password, Fname, Lname, Interest1, Interest2,
                                                                Interest3, joindate, Application))
         self.conn.commit()
@@ -425,7 +429,11 @@ doc_cli = DocumentDBClient()
         
 def main():
     get_proxy().create_tables()
+<<<<<<< HEAD
     doc_cli.create_document("Poopy", "Fred", "")
+=======
+    doc_cli.createUSer("me", "me", "me","me", "python", "audio", "math", 1, "SU")
+>>>>>>> 6fb4b233ff126f5bcb30709b73de6f3ee352fddf
     
     
 

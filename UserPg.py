@@ -5,6 +5,12 @@ import DocumentFileTest
 from DocumentScreenTester import user
 import ProcessMember
 import createfilepopup
+<<<<<<< HEAD
+=======
+
+import DocumentFileTest
+from DocumentScreenTester import user
+>>>>>>> 6fb4b233ff126f5bcb30709b73de6f3ee352fddf
 
 class UserPg():
 
@@ -17,8 +23,8 @@ class UserPg():
         parent.geometry("{0}x{1}+0+0".format(
             parent.winfo_screenwidth(), parent.winfo_screenheight()))
         self.parent.configure(background="white")
-        self.UserDetailService = Users1.Users()
-        self.rank = self.UserDetailService.getRank(username)
+        
+        self.rank = doc_cli.getRank(username)
         self.memberName = StringVar()
         self.memberInt = StringVar()
         self.docName = StringVar()
@@ -160,7 +166,12 @@ class UserPg():
 
     def createnewdoc(self):
         print("new document")
+<<<<<<< HEAD
 
+=======
+        from tkinter import simpledialog
+        doc_name = simpledialog.askstring("Document Name", "Name of new document?")
+>>>>>>> 6fb4b233ff126f5bcb30709b73de6f3ee352fddf
         versionNo = 0
         init_contents =""
         doc_name, privacy_level = createfilepopup.createfileinput.main(self)
