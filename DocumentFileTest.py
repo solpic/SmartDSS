@@ -70,25 +70,28 @@ class DocumentScreen:
         self.allUserMenu = Menu(self.updateMembersMenu)
         # allMembersMenu.add_command(label="xyz")
         for member in self.currentDoc.getMembers():
-            self.allMembersMenu.add_command(label=member.getUserName())
-        self.updateMembersMenu.add_cascade(label="Remove User", menu=self.allMembersMenu)
-        allUserMenu = Menu(self.updateMembersMenu)
+            #self.allMembersMenu.add_command(label=member.getUserName())
+            self.allMembersMenu.add_command(label=memeber.getUserName(),command=lambda i= user: self.removeUser(i))
+        # self.updateMembersMenu.add_cascade(label="Remove User", menu=self.allMembersMenu)
+        self.allUserMenu = Menu(self.updateMembersMenu)
         for user in self.allUsers:
             self.allUserMenu.add_command(label=user)
-            self.allMembersMenu.add_command(label=user,command=lambda:self.removeUser(user))
         self.updateMembersMenu.add_cascade(label="Remove Member", menu=self.allMembersMenu)
         self.updateMembersMenu.add_cascade(label="All Registered System Users",menu=self.allUserMenu)
         membOptMenu.add_cascade(label="View All Members", menu=self.allMembersMenu)
         self.mainMenu.add_cascade(label="Membership Option",menu=membOptMenu)
 
         # Taboo Word Menu
-        tabooMenu = Menu(self.mainMenu)
-        tabooWords = TabooWords.TabooWord.getAllTaboo() 
-        for tWord in tabooWords:
-            tabooMenu.add_command(label=tWord)
-        tabooMenu.add_separator()
-        tabooMenu.add_command(label="Add Taboo Word", command=self.addTabooWord)# command ~~ addTabooWord
-        self.mainMenu.add_cascade(label="TabooWords", menu=tabooMenu)
+        self.tabooMenu = Menu(self.mainMenu)
+        self.tabooWords = TabooWords.TabooWord.getAllTaboo() 
+        for tWord in self.tabooWords:
+            self.tabooMenu.add_command(label=tWord)
+        self.tabooMenu.add_separator()
+        self.tabooMenu.add_command(label="Add Taboo Word", command=self.addTabooWord)# command ~~ addTabooWord
+        self.tabooMenu.add_separator()
+        self.tabooMenu.add_command(label="Newly Added Taboos")
+        
+        self.mainMenu.add_cascade(label="TabooWords", menu=self.tabooMenu)
 
         # Document Complaints [ Against Document ] Menu
         docComplaintMenu = Menu(self.mainMenu)
@@ -149,27 +152,29 @@ class DocumentScreen:
         print("Add User Function")
         self.updateMembersMenu
     def removeUser(self,uname):
+        from DocumentDB import doc_cli
+
         print("Remove User Function , uname: {}".format(uname))
         x=0
-        '''Real Code
+        
         mem = self.currentDoc.getMembers()
+        
         for i in range(0,len(mem)):
             if (mem[i].getUserName()==uname):
                 x=i
+                delmem = mem[i]
                 break
-        '''
 
-        # Placeholder Code
-        mem = self.allUsers
-        for i in range(0,len(mem)):
-            if (mem[i]==uname):
-                x = i
-                break
+
         self.allMembersMenu.delete(x)
+        self.currentDoc.removeMember(delmem)
     #PostCond: The inputed Word is added to the DB of Taboo Words
     def addTabooWord(self):
         uInput = tkSimpleDialog.askstring("Add Taboo Word","Word?")
-        #currentDoc.addTabooWord(uInput)
+        #TabooWords.TabooWord.addTabooWord(uInput)
+        self.tabooMenu.add_command(label=uInput)
+        #self.tabooMenu.pack()
+
     #TODO: Changing other GUI elements as well when its locked
     #  - submit button
     #  - adding member button

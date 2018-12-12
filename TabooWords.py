@@ -15,8 +15,8 @@ class TabooWord:
     def addTabooWord(word):
         global allTaboo
         allTaboo.append(word)
-        # TODO: Database call to add word
-        print("# TODO: Database call to add word")
+        # TODO: DallTaboo isnt an attribute
+        print("# TODO: THIS DOESNT WORK")
 
     @staticmethod
     def getAllTaboo():
