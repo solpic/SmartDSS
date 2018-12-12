@@ -152,6 +152,7 @@ class DocumentDBServer():
             self.c.execute('DROP TABLE IF EXISTS taboo')
             self.c.execute('DROP TABLE IF EXISTS complaints')
             self.c.execute('DROP TABLE IF EXISTS users')
+            self.c.execute('DROP TABLE IF EXISTS versions')
 
         # Document class/model definition
         self.c.execute('''CREATE TABLE documents
@@ -174,6 +175,8 @@ class DocumentDBServer():
         self.c.execute('''CREATE TABLE users
                             (username text NOT NULL PRIMARY KEY, password text, Fname text, Lname text, Interest1 text,
                  Interest2 text, Interest3 text, joindate date, type text)''')
+                 
+        self.c.execute('''CREATE TABLE versions (doc_id INTEGER, date TEXT, update_id INTEGER''')
         self.conn.commit()
         return True
 
@@ -202,6 +205,14 @@ class DocumentDBServer():
             doc = self.make_document(row)
             doc.show()
         return True
+    
+    def create_version(self, doc_id, date, update_id):
+        self.c.execute("INSERT INTO versions (doc_id, date, update_id) VALUES (?, ?, ?)", (doc_id, date, update_id, ))
+        return True
+        
+    def get_versions(self, doc_id):
+        self.c.execute("SELECT date, update_id FROM versions WHERE doc_id=?", (doc_id,))
+        return self.c.fetchall()
 
     def show_all_users(self):
         self.c.execute("SELECT * FROM users")
@@ -353,6 +364,13 @@ class DocumentDBServer():
 
 
 class DocumentDBClient():
+    
+    def create_version(self, doc_id, date, update_id):
+        return get_proxy(doc_id, date, update_id)
+        
+    def get_versions(self, doc_id):
+        return get_proxy().get_versions(doc_id)
+        
     def show_all_users(self):
         get_proxy().show_all_users()
     

@@ -66,11 +66,11 @@ class DocumentScreen:
         self.pastVerMenu = Menu(optMenu)
         num = 0
         #deltas = doc_cli.get_updates(self.currentDoc.doc_id,)
-        deltas = self.currentDoc.deltaLog
-        print("Deltas Length: {}".format(len(deltas)))
-        for delta in deltas:
+        versions = doc_cli.get_versions(self.currentDoc.doc_id)
+        i = 0
+        for v in versions:
             print("Adding Restore Points")
-            self.pastVerMenu.add_command(label = delta.show() + "NUM: " + str(num) )
+            self.pastVerMenu.add_command(label = "#"+str(i)+v[0] )
             num+=1
         #optMenu.add_command(label="Set Privacy Level")
         self.privMenu = Menu(optMenu)
