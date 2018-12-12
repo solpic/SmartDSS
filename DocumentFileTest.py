@@ -229,16 +229,6 @@ class DocumentScreen:
     def submitChanges(self):
         from DocumentDB import doc_cli
         old = self.currentDoc.getWords()
-        dirty = old
-        clean  = ""
-        for tw in TabooWords.TabooWord.getAllTaboo():
-            dirty = dirty.replace(tw.text,"UNK")
-        clean = dirty
-        print("CLEAN: "+clean)
-        old = clean
-        self.currentDoc.words=clean
-        self.refreshText()
-        print("OLD: "+old)
         new = self.txt.get("1.0",'end-1c')
         deltas = self.currentDoc.generateDeltas(old,new)
         self.currentDoc.words= new
