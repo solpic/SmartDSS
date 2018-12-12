@@ -139,7 +139,7 @@ class DocumentDBServer():
 
     def getMemberAppl(self):
         type = ("GU",)
-        self.membershipList = self.c.execute('SELECT username, FName, LName, Interest1, Interest2, Interest3, type FROM t WHERE type = ?', type).fetchall()
+        self.membershipList = self.c.execute('SELECT username, FName, LName, Interest1, Interest2, Interest3, type FROM users WHERE type = ?', type).fetchall()
         for entry in self.membershipList:
             print(entry)
         return pickle.dumps(self.membershipList)
