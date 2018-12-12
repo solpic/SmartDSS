@@ -20,7 +20,7 @@ class DocumentScreen:
 
 
     def makeScreen(self):
-
+        from DocumentDB import doc_cli
         DocHeight=1024
         DocWidth = 720
         
@@ -37,7 +37,7 @@ class DocumentScreen:
         # All Following Menus are submenus of the self.mainMenu object
         # Back Menu
         backMenu = Menu(self.mainMenu,tearoff=0)
-        backMenu.add_command(label="GO BACK")#command ~~ openHomePg()
+        backMenu.add_command(label="GO BACK",command=self.undo)#command ~~ openHomePg()
         self.mainMenu.add_cascade(label="<--",menu=backMenu)
 
         # Complain Menu
@@ -53,7 +53,12 @@ class DocumentScreen:
         optMenu.add_command(label="Unlock Document",command=self.unlockDocument)#command = unLockDocument
         self.pastVerMenu = Menu(optMenu)
         num = 0
-        for delta in self.currentDoc.deltaLog:
+        #deltas = doc_cli.get_updates(self.currentDoc.doc_id,)
+        deltas = self.currentDoc.deltaLog
+        print("Deltas Length: {}".format(len(deltas)))
+        for delta in deltas:
+            print("Adding Restore Points")
+            delta.show()
             self.pastVerMenu.add_command(label = delta.show() + "NUM: " + str(num) )
             num+=1
         optMenu.add_cascade(label="Load Past Versions", menu=self.pastVerMenu)#command = ???? Something to view previous docs
@@ -69,9 +74,8 @@ class DocumentScreen:
         
         self.allMembersMenu = Menu(self.updateMembersMenu)
         self.allUserMenu = Menu(self.updateMembersMenu) #For Removing Members
-        #membOptMenu.add_cascade(label="Update Members", menu=self.updateMembersMenu)
         self.allMembersMenu.add_command(label="All Members Menu")
-        #TODO: Real Code:: for member in self.currentDoc.getMembers():
+
         for member in self.allUsers:
             self.allMembersMenu.add_command(label=member,command=lambda i= member: self.removeUser(i))
         self.allUserMenu = Menu(self.updateMembersMenu)
@@ -107,7 +111,9 @@ class DocumentScreen:
         self.changeMenu = Menu(self.mainMenu)
         self.changeMenu.add_command(label="Submit Changes",command= self.submitChanges)
         self.changeMenu.add_command(label="Pull Staged Changes",command = self.pullChanges)
-        self.mainMenu.add_cascade(label="PUSH/PULL",menu=self.changeMenu)
+        self.changeMenu.add_command(label="Create New Version",command=self.createNewVersion)
+        self.changeMenu.add_command(label="Save as New Version",command=self.saveAsNew)
+        self.mainMenu.add_cascade(label="Version Control",menu=self.changeMenu)
 
 
         # --Dynamic Buttons----------------------------------------------------------------------
@@ -216,11 +222,14 @@ class DocumentScreen:
         complaint=tkSimpleDialog.askstring("Enter Complain Against User","Complaint")
         doc_cli.add_complaint(self.currentUser,complaint)
         
-    def addDeltaToDisplay(self,oldDeltas,newDeltas):
-        for i in range(0,len(newDeltas)):
-            if(i>len(oldDeltas)):
-                self.pastVerMenu.add_command(label= newDeltas[i].show() + "NUM: " + str(i), 
-                command = lambda k = i, d=self.currentDoc.deltaLog:self.currentDoc.sRec(k,d))
+    def undo(self):
+        print("Go back one delta")
+    
+    def createNewVersion(self):
+        print("Create a New Version")
+    def saveAsNew(self):
+        print("Save as New Version")
+
     def submitChanges(self):
         from DocumentDB import doc_cli
         old = self.currentDoc.getWords()
@@ -251,6 +260,12 @@ class DocumentScreen:
         self.txt.delete(1.0, END)
         self.txt.insert(END, self.currentDoc.words)
 
+    def addDeltaToDisplay(self,oldDeltas,newDeltas):
+        print("Add Delta To Display")
+        for i in range(0,len(newDeltas)):
+            if(i>len(oldDeltas)):
+                self.pastVerMenu.add_command(label= newDeltas[i].show() + "NUM: " + str(i), 
+                command = lambda k = i, d=self.currentDoc.deltaLog:self.currentDoc.sRec(k,d))
     def pullChanges(self):
         from DocumentDB import doc_cli
         doc_cli.show_all_updates()

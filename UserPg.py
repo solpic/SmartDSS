@@ -161,7 +161,7 @@ class UserPg():
         user = self.memberName.get()
         self.memberSearch = doc_cli.searchUser(user)
         for entry in self.memberSearch:
-        self.var.set(self.memberSearch)
+            self.var.set(self.memberSearch)
 
 # This function searches for a member based on Interests
     def intSearch(self):

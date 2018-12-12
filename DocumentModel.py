@@ -136,7 +136,8 @@ class DocumentModel():
 
         #deltaLog = cleanDeltaLog
         self.deltaLog.extend(cleanDeltaLog)
-        
+        for x in self.deltaLog:
+            x.show()
         return cleanDeltaLog
     
     def reconstruct(self,num,deltaLog):
