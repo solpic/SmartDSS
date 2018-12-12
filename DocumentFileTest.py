@@ -7,7 +7,7 @@ import DeltaObjects
 #TODO: Real User Class Integration
 class DocumentScreen:
     def __init__(self,user,document):
-        self.lastChange = 0
+        self.lastChange = -1
         self.currentUser = user;
         self.userRank = user.getRank()
         self.currentDoc= document
@@ -204,15 +204,16 @@ class DocumentScreen:
                 doc_cli.push_delete(self.currentDoc.doc_id,delta)
             if(isinstance(delta,DeltaObjects.Insert)):
                 doc_cli.push_insert(self.currentDoc.doc_id,delta)
-        deltaListServ = doc_cli.get_updates(self.currentDoc.doc_id,0)
-        print("DeltaList Server")
-        for i in deltaListServ:
-            i.show()
-        print("DeltaList Client")
-        deltaListClient = self.currentDoc.deltaLog
-        for j in deltaListClient:
-            j.show()
-        print("Old {} | New {} |Doc.words {}".format(old,new,self.currentDoc.words))
+        doc_cli.show_all_updates()
+        # deltaListServ = doc_cli.get_updates(self.currentDoc.doc_id,0)
+        # print("DeltaList Server")
+        # for i in deltaListServ:
+            # i.show()
+        # print("DeltaList Client")
+        # deltaListClient = self.currentDoc.deltaLog
+        # for j in deltaListClient:
+            # j.show()
+        # print("Old {} | New {} |Doc.words {}".format(old,new,self.currentDoc.words))
 
     def refreshText(self):
         self.txt.delete(1.0, END)

@@ -6,7 +6,8 @@ class Users():
     def __init__(self):
         self.conn = sqlite3.connect('usertest.db')
         self.c = self.conn.cursor()
-        self.SearchList = []
+        self.searchList = []
+        self.membershipList = []
         self.SearchInterestList = []
         #self.c.execute('''CREATE TABLE t
         #                    (username text NOT NULL PRIMARY KEY, password text, Fname text, Lname text, Interest1 text,
@@ -41,34 +42,44 @@ class Users():
             interest = partialIntSearch
         self.conn.row_factory = lambda cursor, row: row[0]
         d = self.conn.cursor()
-        self.SearchInterestList = d.execute('SELECT username FROM t WHERE Interest1 LIKE ?' , ('%'+ interest + '%',)).fetchall()
-        self.SearchInterestList.extend(d.execute('SELECT username FROM t WHERE Interest2 LIKE ?' , ('%'+ interest + '%',)).fetchall())
-        self.SearchInterestList.extend(d.execute('SELECT username FROM t WHERE Interest3 LIKE ?', ('%' + interest + '%',)).fetchall())
-        for entry in self.SearchInterestList:
+        self.searchInterestList = d.execute('SELECT username FROM t WHERE Interest1 LIKE ?' , ('%'+ interest + '%',)).fetchall()
+        self.searchInterestList.extend(d.execute('SELECT username FROM t WHERE Interest2 LIKE ?' , ('%'+ interest + '%',)).fetchall())
+        self.searchInterestList.extend(d.execute('SELECT username FROM t WHERE Interest3 LIKE ?', ('%' + interest + '%',)).fetchall())
+        for entry in self.searchInterestList:
             print(entry)
-        return self.SearchInterestList
+        return self.searchInterestList
 
     def searchUser(self, username):
         user = (username,)
         self.conn.row_factory = lambda cursor, row: row[0]
         d = self.conn.cursor()
-        self.SearchList = d.execute('SELECT username FROM t WHERE username = ?', user).fetchall()
-        for entry in self.SearchList:
+        self.searchList = d.execute('SELECT username FROM t WHERE username = ?', user).fetchall()
+        for entry in self.searchList:
             print(entry)
-        return self.SearchList
+        return self.searchList
 
     def searchtestUser(self, username):
         user = (username,)
-        self.SearchList = self.c.execute('SELECT username, Interest1 FROM t WHERE username = ?', user).fetchall()
-        for entry in self.SearchList:
+        self.searchList = self.c.execute('SELECT username, Interest1 FROM t WHERE username = ?', user).fetchall()
+        for entry in self.searchList:
             print(entry)
-        return self.SearchList
+        return self.searchList
 
 
-    def setUser(self):
-        user = (self.username,)
-        self.c.execute('SELECT password FROM t WHERE username= ? ', user)
-        # the SU sets the application type to OU
+    def setUser(self, username):
+        user = (username,)
+        self.c.execute('UPDATE t SET type = "OU" WHERE username= ? ', user)
+        self.conn.commit()
+        self.c.execute('SELECT * FROM t WHERE username= ? ', user)
+        usern = self.c.fetchone()
+        print(usern)
+
+    def removeUser(self, username):
+        user = (username,)
+        self.c.execute('DELETE FROM t WHERE username= ? ', user)
+        self.conn.commit()
+        self.c.execute('SELECT * FROM t WHERE username= ? ', user)
+
 
     # TODO: Requested Features from Arik:
     def getRank(self, username):
@@ -100,3 +111,10 @@ class Users():
         Interest3 = self.c.fetchone()[0]
         print(Interest3)
         return Interest3
+
+    def getMemberAppl(self):
+        type = ("GU",)
+        self.membershipList = self.c.execute('SELECT username, FName, LName, Interest1, Interest2, Interest3, type FROM t WHERE type = ?', type).fetchall()
+        for entry in self.membershipList:
+            print(entry)
+        return self.membershipList

@@ -3,6 +3,8 @@ from DocumentDB import doc_cli
 import Users1
 import DocumentFileTest
 from DocumentScreenTester import user
+import ProcessMember
+import createfilepopup
 
 class UserPg():
 
@@ -95,6 +97,7 @@ class UserPg():
             print("entry", entry)
             searchResultInt.insert(entry)
 
+
         Label(frame7, text="Search Documents", font=('Ariel', 26), fg="medium blue", width=15).grid(
             sticky=E)
         Entry(frame7, textvariable = self.docName, width=50).grid(row=1, column=0, sticky=E, padx=10)
@@ -106,16 +109,22 @@ class UserPg():
         self.searchResultDocs.grid(row=2, column=0, sticky=E, padx=10)
         for entry in self.documentSearch:
             print("entry", entry)
+        Button(frame7, text="Open Document", font=('Ariel', 24), fg="medium blue", width=16, background="white",
+               command=self.opendoc).grid(row=3, column=0, pady=5)
+        Label(frame7, height=12).grid(row=5, column=0)
 
-        Button(frame7,text="Open Document", font=('Ariel', 24), fg="medium blue", width=16, background= "white", command = self.opendoc).grid(row=3, column=0, pady=5)
+        if self.rank =='SU':
+            Button(frame8, text= "Process Complaints", font=('Ariel', 24), fg="medium blue", background="white").grid(row=1, column=1, padx=30, pady=40, sticky=E)
+            Button(frame8, text="Process Taboo Words", font=('Ariel', 24), fg="medium blue", background="white").grid(row=3, column=1,padx=30, pady=40, sticky = E)
+            Button(frame8, text="Process Applications", font=('Ariel', 24), fg="medium blue", background="white", command = self.processApl).grid(row=5, column=1, padx=30, pady =40, sticky=E)
+        elif self.rank == 'OU':
+            docimg = PhotoImage(file="docSharing.gif")
+            OUdocpic = Label(frame8, image=docimg)
+            OUdocpic.image = docimg
+            OUdocpic.grid(row=1, column=1)
 
-        Button(frame8, text= "Process Complaints", font=('Ariel', 24), fg="medium blue", background="white"
-                            ).grid(row=1, column=1, padx=30, pady=40, sticky=E)
-        Button(frame8, text="Process Taboo Words", font=('Ariel', 24), fg="medium blue",
-                             background="white").grid(row=3, column=1,padx=30, pady=40, sticky = E)
-        Button(frame8, text="Process Applications", font=('Ariel', 24), fg="medium blue",
-                             background="white").grid(row=5, column=1, padx=30, pady =40, sticky=E)
         self.frame1.pack()
+
 
     def getImage(self):
         img = PhotoImage(file="testgirl.gif")
@@ -151,12 +160,13 @@ class UserPg():
 
     def createnewdoc(self):
         print("new document")
-        doc_name = "New Document Test"
+
         versionNo = 0
         init_contents =""
-        doc_cli.create_document( doc_name, self.user, init_contents)
+        doc_name, privacy_level = createfilepopup.createfileinput.main(self)
+        doc_cli.create_document(doc_name, self.user, init_contents)
         doc_cli.get_document(doc_name, self.user, versionNo)
-       # DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
+        DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
 
     def opendoc(self):
         item = self.searchResultDocs.curselection()
@@ -165,8 +175,10 @@ class UserPg():
         document = docdetail[0]
         usern = docdetail[1]
         versionNo = docdetail[2]
-        #DocumentFileTest.DocumentScreen(user(usern), doc_cli.get_document(document, usern, versionNo))
+        DocumentFileTest.DocumentScreen(user(usern), doc_cli.get_document(document, usern, versionNo))
 
+    def processApl(self):
+        ProcessMember.MemberApplication.main(self)
 
     def main(self, username):
         root = Toplevel()

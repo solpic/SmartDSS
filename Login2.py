@@ -1,9 +1,10 @@
 from tkinter import*
+from tkinter import messagebox
 import sqlite3
-import Users1
 import UserPg
 import HomePg
-#from RPCClient import get_proxy
+from DocumentDB import doc_cli
+
 class Login():
     def __init__(self):
         root = self.root = Toplevel()
@@ -35,15 +36,32 @@ class Login():
     def login(self):
         username = self.loginName.get()
         password = self.loginPass.get()
-        x1 = Users1.Users()
-        passwordA = x1.getPassword(username)
+        
+        doc_cli.show_all_users()
+        passwordA = doc_cli.getPassword(username)
+        
         passwordN = (password,)
         if(username == NONE):
              print("Error no username")
         if(passwordA == passwordN):
              self.showLoged(username)
+        x1 = Users1.Users()
+
+        if username == "":
+             messagebox.showerror("Error", "Please enter a username and password")
         else:
-             self.sts.set("Wrong Name and Password")
+            passwordA = x1.getPassword(username)
+
+            rank = x1.getRank(username)
+            passwordN = (password,)
+            if rank == 'GU':
+                messagebox.showwarning("Warning",
+                                   "Membership Application has not yet been approved so cannot log on")
+
+            elif(passwordA == passwordN):
+                self.showLoged(username)
+            else:
+                self.sts.set("Wrong Name and Password")
 
     def showLoged(self, username):
         self.loginFrame.pack_forget()
