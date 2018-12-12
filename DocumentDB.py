@@ -183,7 +183,7 @@ class DocumentDBServer():
             # Document exists already
             return False
         self.c.execute(
-            '''INSERT INTO documents (name, contents, version, owner, creation_date, locked, id) VALUES (?, ?, ?, ?, ?, ?, NULL)''', \
+            '''INSERT INTO documents (name, contents, version, owner, creation_date, locked, id, privacy) VALUES (?, ?, ?, ?, ?, ?, NULL, "private")''', \
             (name, contents, 0, user, time.time(), 1,))
 
         self.conn.commit()
@@ -319,6 +319,10 @@ class DocumentDBServer():
 
     def add_complaint(self, user, complaint):
         self.c.execute("INSERT INTO complaints (user, complaint) VALUES (?, ?)", (user, complaint,))
+        return True
+        
+    def setPrivacyLevel(self, doc_id, privacy):
+        self.c.execute("UPDATE documents SET privacy=? WHERE id=?", (privacy, doc_id, ))
         return True
 
 
@@ -463,6 +467,9 @@ class DocumentDBClient():
 
     def getMemberAppl(self):
         return pickle.loads(get_proxy().getMemberAppl().data)
+        
+    def setPrivacyLevel(self, doc_id, privacy):
+        return get_proxy().setPrivacyLevel(doc_id, privacy)
 
 
 doc_cli = DocumentDBClient()
