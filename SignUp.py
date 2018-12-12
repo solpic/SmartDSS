@@ -73,11 +73,11 @@ class SignUp():
         joindate = str(date.today())
         Application = 'GU'
 
-
         usern = doc_cli.getUsername(username)
+        print(usern)
+
         username1 = (username,)
-
-
+        print(username1)
         if(username == "" ):
             messagebox.showwarning("Warning",
                                    "Application needs all items to be completed to be successfully submitted")

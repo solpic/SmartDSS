@@ -86,9 +86,9 @@ class UserPg():
 
         Button(frame3, text="create document", font=('Ariel', 30), fg="medium blue", background="white",
                command=self.createnewdoc).grid(row=0, column=0, padx=10, pady=10)
-      #  Button(frame3, text=self.userDocs[0][0], command = self.openDoc1, font=('Ariel', 30), fg="medium blue", background="white", width=15).grid( row=0, column=1, padx=20)
-      #  Button(frame3, text=self.userDocs[1][0], command = self.openDoc2, font=('Ariel', 30), fg="medium blue", background="white", width=15).grid(row=0,column=2, padx=10)
-      #  Button(frame3, text=self.userDocs[2][0], command= self.openDoc3, font=('Ariel', 30), fg="medium blue", background="white", width=15).grid(row=0, column=3,  padx=10)
+        Button(frame3, text=self.userDocs[0][0], command = self.openDoc1, font=('Ariel', 30), fg="medium blue", background="white", width=15).grid( row=0, column=1, padx=20)
+        Button(frame3, text=self.userDocs[1][0], command = self.openDoc2, font=('Ariel', 30), fg="medium blue", background="white", width=15).grid(row=0,column=2, padx=10)
+        Button(frame3, text=self.userDocs[2][0], command= self.openDoc3, font=('Ariel', 30), fg="medium blue", background="white", width=15).grid(row=0, column=3,  padx=10)
 
         Label(frame6, text="Search Members by Username", font=('Ariel', 16), fg="medium blue", width=24).grid(row=0, column=0)
         Entry(frame6, textvariable=self.memberName, width=50).grid(row=1, column=0, sticky=E, padx=10)
@@ -170,8 +170,6 @@ class UserPg():
                 entry = (doc.docName, doc.owner, doc.versionNumber)
                 names.append(entry)
         self.documentSearch = names
-        for entry in self.documentSearch:
-            print("search", entry)
         self.docvar.set(names)
 
     def getDocs(self):
@@ -182,6 +180,7 @@ class UserPg():
                 entry = (doc.docName, doc.owner, doc.versionNumber, doc.createDate)
                 self.userDocs.append(entry)
         #sort this array
+        self.userDocs.sort(key=self.sortdate)
         for doc in docs:
             if self.user not in doc.owner:
                 entry = (doc.docName, doc.owner, doc.versionNumber, doc.createDate)
@@ -189,6 +188,8 @@ class UserPg():
         for entry in self.userDocs:
             print("results", entry)
 
+    def sortdate(self, val):
+        return val[3]
 
     def createnewdoc(self):
         print("new document")
