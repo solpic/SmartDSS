@@ -278,9 +278,12 @@ class DocumentDBServer():
         lck.acquire()
         success = True
         try:
-            self.c.execute("SELECT position, length, contents FROM updates WHERE doc_id=? AND id>? ORDER BY id ASC", (doc_id, last_update,))
-            old_updates = self.c.fetchall()
-            
+            if last_update>0:
+                self.c.execute("SELECT position, length, contents FROM updates WHERE doc_id=? AND id>? ORDER BY id ASC", (doc_id, last_update,))
+                old_updates = self.c.fetchall()
+            else:
+                old_updates = []
+                
             for i in range(0, len(location)):
                 offset = 0
                 for u in old_updates:
@@ -366,7 +369,7 @@ class DocumentDBServer():
 class DocumentDBClient():
     
     def create_version(self, doc_id, date, update_id):
-        return get_proxy(doc_id, date, update_id)
+        return get_proxy().create_version(doc_id, date, update_id)
         
     def get_versions(self, doc_id):
         return get_proxy().get_versions(doc_id)
