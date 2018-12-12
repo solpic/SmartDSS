@@ -267,7 +267,7 @@ class DocumentDBServer():
         lck.acquire()
         success = True
         try:
-            self.c.execute("SELECT * FROM updates WHERE doc_id=? AND id>? ORDER BY id ASC", (doc_id, last_update,))
+            self.c.execute("SELECT position, length, contents FROM updates WHERE doc_id=? AND id>? ORDER BY id ASC", (doc_id, last_update,))
             old_updates = self.c.fetchall()
             
             for i in range(0, len(location)):
