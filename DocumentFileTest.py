@@ -13,7 +13,8 @@ class DocumentScreen:
         self.currentDoc= document
         # self.docMembers = document.getMembers()
         from DocumentDB import doc_cli
-        self.allUsers = doc_cli.get_all_sys_Users() #TODO: Server Call
+        #self.allUsers = doc_cli.get_all_sys_Users() #TODO: Server Call
+        self.allUsers = ["ARI","ME","JAS"]
         from RPCClient import get_proxy
         get_proxy().delete_updates(1, 0, 100)
         self.makeScreen()
@@ -173,9 +174,12 @@ class DocumentScreen:
         self.currentDoc.removeMember(delmem)
     #PostCond: The inputed Word is added to the DB of Taboo Words
     def addTabooWord(self):
+        from DocumentDB import doc_cli
+
         uInput = tkSimpleDialog.askstring("Add Taboo Word","Word?")
         #TabooWords.TabooWord.addTabooWord(uInput)
-        self.tabooMenu.add_command(label=uInput)
+        if doc_cli.add_taboo_word(uInput):
+            self.tabooMenu.add_command(label=uInput)
         #self.tabooMenu.pack()
 
     #TODO: Changing other GUI elements as well when its locked

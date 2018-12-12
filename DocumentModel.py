@@ -39,7 +39,7 @@ class DocumentModel():
     def unlockDocument(self):
         from DocumentDB import doc_cli
         if doc_cli.set_document_lock(self.docName,self.owner,self.versionNumber,self.locked):
-         self.locked=0
+            self.locked=0
 
     def addMember(self, member):
         from DocumentDB import doc_cli
