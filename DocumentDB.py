@@ -216,6 +216,18 @@ class DocumentDBServer():
                 3] + ", ID: " + str(row[4]))
 
         return True
+        
+    def search_docs(self, username):
+        self.c.execute("SELECT type FROM users WHERE username=?", (username, ))
+        if self.c.fetchone()[0]=="SU":
+            self.c.execute("SELECT * FROM documents")
+        else:
+            self.c.execute("SELECT * FROM documents WHERE privacy=? OR PRIVACY=? OR owner=? OR id IN (SELECT doc_id FROM members WHERE member=?)", \
+                        ("public", "restricted", username, username, ))
+        
+        
+        return pickle.dumps(self.c.fetchall())
+        
 
     def make_document(self, row):
         from DocumentModel import DocumentModel
@@ -356,6 +368,13 @@ class DocumentDBClient():
 
     def get_all_documents(self):
         rows = pickle.loads(get_proxy().get_all_documents().data)
+        docs = []
+        for row in rows:
+            docs.append(self.make_document(row))
+        return docs
+        
+    def search_docs(self, username):
+        rows = pickle.loads(get_proxy().search_docs(username).data)
         docs = []
         for row in rows:
             docs.append(self.make_document(row))

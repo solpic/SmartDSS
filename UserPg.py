@@ -144,6 +144,8 @@ class UserPg():
             OUdocpic.image = docimg
             OUdocpic.grid(row=1, column=1)
 
+        self.docSearch()
+        self.memSearch()
         self.frame1.pack()
 
     def getImage(self):
@@ -160,9 +162,13 @@ class UserPg():
 # This function searches for a Member based on name
     def memSearch(self):
         user = self.memberName.get()
-        self.memberSearch = doc_cli.searchUser(user)
-        for entry in self.memberSearch:
-            self.var.set(self.memberSearch)
+        users = doc_cli.get_all_users()
+        res = []
+        for u in users:
+            if user in u[0]:
+                res.append(u)
+                
+        self.var.set(res)
 
 # This function searches for a member based on Interests
     def intSearch(self):
@@ -185,7 +191,7 @@ class UserPg():
 
 #This function gets the user documents to show his/her 3 most recent
     def getDocs(self):
-        docs = doc_cli.get_all_documents()
+        docs = doc_cli.search_docs(self.user)
         names = []
         for doc in docs:
             if self.user in doc.owner:
@@ -223,7 +229,12 @@ class UserPg():
         document = docdetail[0]
         usern = docdetail[1]
         versionNo = docdetail[2]
-        DocumentFileTest.DocumentScreen(user(usern), doc_cli.get_document(document, usern, versionNo))
+        
+        doc = doc_cli.get_document(document, usern, versionNo)
+        
+        
+        
+        DocumentFileTest.DocumentScreen(user(usern), doc)
 
     def openDoc1(self):
         documentname = self.userDocs[0][0]

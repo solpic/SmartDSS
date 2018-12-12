@@ -216,7 +216,7 @@ class DocumentScreen:
     def addUserComplaint(self):
         from DocumentDB import doc_cli
         complaint=tkSimpleDialog.askstring("Enter Complain Against User","Complaint")
-        doc_cli.add_complaint(self.currentUser,complaint)
+        doc_cli.add_complaint(self.currentUser.getUserName(),complaint)
         
     def undo(self):
         print("Go back one delta")
