@@ -11,6 +11,9 @@ import TabooWords
 # DocumentDBClient is called by the client for all getters/setters
 # Helper functions to wrap documentdbserver for RPC
 
+# 3 most read or opened
+# Get all users
+
 class DocumentDBServer():
     def __init__(self):
         self.conn = sqlite3.connect('database.db', isolation_level=None)
@@ -20,6 +23,10 @@ class DocumentDBServer():
         self.c.execute("SELECT id FROM documents")
         for row in self.c.fetchall():
             self.locks[row[0]] = threading.Lock()
+            
+    def get_all_users(self):
+        self.c.execute("SELECT username FROM users")
+        return pickle.dumps(self.c.fetchall())
     
     def createUSer(self, username, password, Fname, Lname, Interest1, Interest2, Interest3, joindate, Application ):
         print("Creating user: "+username)
@@ -140,7 +147,8 @@ class DocumentDBServer():
                         version INTEGER, privacy TEXT,
                         creation_date REAL,
                         locked INTEGER,
-                        id INTEGER PRIMARY KEY AUTOINCREMENT
+                        id INTEGER PRIMARY KEY AUTOINCREMENT,
+                        times_read INTEGER
                         )''')
                         
         self.c.execute('''CREATE TABLE updates
