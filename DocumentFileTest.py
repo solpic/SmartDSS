@@ -87,8 +87,8 @@ class DocumentScreen:
         self.tabooMenu = Menu(self.mainMenu)
         self.tabooWords = TabooWords.TabooWord.getAllTaboo() 
         for tWord in self.tabooWords:
-            if tWord[1]==1:
-                self.tabooMenu.add_command(label=tWord[0])
+            if tWord.status==1:
+                self.tabooMenu.add_command(label=tWord.text)
         self.tabooMenu.add_separator()
         self.tabooMenu.add_command(label="Add Taboo Word", command=self.addTabooWord)# command ~~ addTabooWord
         self.tabooMenu.add_separator()
@@ -184,11 +184,8 @@ class DocumentScreen:
         from DocumentDB import doc_cli
 
         uInput = tkSimpleDialog.askstring("Add Taboo Word","Word?")
-        #TabooWords.TabooWord.addTabooWord(uInput)
-        tWords = TabooWords.TabooWord.getAllTaboo()
-        for word in twords:
-            if word[1]==1:
-                self.tabooMenu.add_command(label=uInput)
+        TabooWords.TabooWord.addTabooWord(uInput)
+
         #self.tabooMenu.pack()
 
     #TODO: Changing other GUI elements as well when its locked
