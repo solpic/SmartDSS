@@ -26,7 +26,7 @@ class DocumentDBServer():
             self.locks[row[0]] = threading.Lock()
             
     def get_all_users(self):
-        self.c.execute("SELECT username FROM users")
+        self.c.execute("SELECT username FROM users WHERE type<>?", ("GU", ))
         return pickle.dumps(self.c.fetchall())
     
     def createUSer(self, username, password, Fname, Lname, Interest1, Interest2, Interest3, joindate, Application ):

@@ -3,6 +3,9 @@ import tkinter.simpledialog as tkSimpleDialog
 import TabooWords
 import DeltaObjects
 
+import time
+from threading import Thread
+
 '''Document View'''
 #TODO: Real User Class Integration
 class DocumentScreen:
@@ -16,8 +19,17 @@ class DocumentScreen:
         # self.docMembers = document.getMembers()
         self.allUsers = doc_cli.get_all_users() #TODO: Server Call
         #self.allUsers = ["ARI","ME","JAS"]
+        
+        
+        Thread(target=self.deferUpdates).start()
         self.makeScreen()
 
+    
+    def deferUpdates(self):
+        time.sleep(5)
+        print("AUTOPULLING")
+        self.submitChanges()
+        Thread(target=self.deferUpdates).start()
 
     def makeScreen(self):
         from DocumentDB import doc_cli
@@ -230,6 +242,13 @@ class DocumentScreen:
         from DocumentDB import doc_cli
         old = self.currentDoc.getWords()
         new = self.txt.get("1.0",'end-1c')
+        
+        import re
+        tabooWords = TabooWords.TabooWord.getAllTaboo()
+        for w in tabooWords:
+            pattern = re.compile(w.text, re.IGNORECASE)
+            new = pattern.sub("UNK", new)
+        
         deltas = self.currentDoc.generateDeltas(old,new)
         self.currentDoc.words= new
         for delta in deltas:
@@ -239,6 +258,9 @@ class DocumentScreen:
             if(isinstance(delta,DeltaObjects.Insert)):
                 doc_cli.push_insert(self.currentDoc.doc_id,delta)
         doc_cli.show_all_updates()
+        
+        
+        self.pullChanges()
 
         # DEBUG CODE
         # deltaListServ = doc_cli.get_updates(self.currentDoc.doc_id,0)
