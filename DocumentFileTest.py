@@ -234,7 +234,10 @@ class DocumentScreen:
             i.show()
         self.currentDoc.reconstruct(5,deltaList)
         self.refreshText()
-        self.lastChange = deltaList[len(deltaList)-1].u_id
+        if len(deltaList)>0:
+            self.lastChange = deltaList[len(deltaList)-1].u_id
+        else:
+            self.lastChange = -1
 
     # TODO: UPDATING SCREEN WITH NEW INFO
     # For Menu we can destroy and re build
