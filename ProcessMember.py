@@ -19,7 +19,6 @@ class MemberApplication():
         self.mapplications = Listbox(frame1, listvariable=self.appvar, width=50)
         self.mapplications.grid(row=1, column=0, padx=5, pady=5)
         for entry in self.applicationSearch:
-            print("entry", entry)
             self.mapplications.insert(entry)
     #Buttons to process the applications
         Button(frame2, text="View", font=('Ariel', 14), fg="medium blue", command=self.getApplications).grid(row=0, column=0,padx=2, pady=5)
