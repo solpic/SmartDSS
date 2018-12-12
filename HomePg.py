@@ -16,7 +16,6 @@ class HomePg():
         self.docName = StringVar()
         self.documentSearch = []
         self.docvar = StringVar(value=self.documentSearch)
-        self.UserDetailService = Users1.Users()
         self.createWidget()
 
     def createWidget(self):

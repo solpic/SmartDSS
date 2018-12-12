@@ -3,6 +3,9 @@ from tkinter import Listbox
 from DocumentDB import doc_cli
 import ProcessMember
 
+import DocumentFileTest
+from DocumentScreenTester import user
+
 class UserPg():
 
     def __init__(self, parent, username):
@@ -15,7 +18,7 @@ class UserPg():
             parent.winfo_screenwidth(), parent.winfo_screenheight()))
         self.parent.configure(background="white")
         
-        self.rank = self.UserDetailService.getRank(username)
+        self.rank = doc_cli.getRank(username)
         self.memberName = StringVar()
         self.memberInt = StringVar()
         self.docName = StringVar()
@@ -160,12 +163,13 @@ class UserPg():
 
     def createnewdoc(self):
         print("new document")
-        doc_name = "New Document Test"
+        from tkinter import simpledialog
+        doc_name = simpledialog.askstring("Document Name", "Name of new document?")
         versionNo = 0
         init_contents =""
         doc_cli.create_document( doc_name, self.user, init_contents)
         doc_cli.get_document(doc_name, self.user, versionNo)
-       # DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
+        #DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
 
     def opendoc(self):
         item = self.searchResultDocs.curselection()
@@ -174,7 +178,7 @@ class UserPg():
         document = docdetail[0]
         usern = docdetail[1]
         versionNo = docdetail[2]
-        #DocumentFileTest.DocumentScreen(user(usern), doc_cli.get_document(document, usern, versionNo))
+        DocumentFileTest.DocumentScreen(user(usern), doc_cli.get_document(document, usern, versionNo))
 
     def processApl(self):
         ProcessMember.MemberApplication.main(self)

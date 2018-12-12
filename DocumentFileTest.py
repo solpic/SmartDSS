@@ -13,8 +13,6 @@ class DocumentScreen:
         self.currentDoc= document
         # self.docMembers = document.getMembers()
         self.allUsers = ["Arik","Idrisy","Microsoft","IBM"] #TODO: Server Call
-        from RPCClient import get_proxy
-        get_proxy().delete_updates(1, 0, 100)
         self.makeScreen()
 
 
@@ -138,7 +136,9 @@ class DocumentScreen:
         scrollb = Scrollbar(textFrame, command=self.txt.yview)
         scrollb.grid(row=0, column=2, sticky='nsew')
         self.txt['yscrollcommand'] = scrollb.set    
-        self.root.config(menu=self.mainMenu)    
+        self.root.config(menu=self.mainMenu)   
+        # Get changes from server
+        self.pullChanges() 
         self.root.mainloop()
 #--- END MAKE SCREEN ------------------------------
 
