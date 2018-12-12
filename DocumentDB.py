@@ -261,16 +261,28 @@ class DocumentDBServer():
         self.c.execute("SELECT locked FROM documents WHERE name=? AND owner=? AND version=?", (name, user, version,))
         return self.c.fetchone()[0]
 
-    def push_updates(self, doc_id, location, contents, length):
+    def push_updates(self, doc_id, location, contents, length, last_update):
         # Lock document (in database), not to be confused with the metadata lock
         lck = self.locks[doc_id]
         lck.acquire()
         success = True
         try:
+            self.c.execute("SELECT * FROM updates WHERE doc_id=? AND id>? ORDER BY id ASC", (doc_id, last_update,))
+            old_updates = self.c.fetchall()
+            
             for i in range(0, len(location)):
+                offset = 0
+                for u in old_updates:
+                    if u[0]<location[i]:
+                        # insert
+                        if u[1]==0:
+                            offset += len(u[2])
+                        else:
+                            offset -= u[1]
+                
                 count = self.c.execute("SELECT COUNT(*) FROM updates WHERE doc_id=?", (doc_id,)).fetchone()[0]
                 self.c.execute('''INSERT INTO updates (doc_id, position, length, contents, id)
-                                        VALUES (?, ?, ?, ?, ?)''', (doc_id, location[i], length[i], \
+                                        VALUES (?, ?, ?, ?, ?)''', (doc_id, location[i] + offset, length[i], \
                                                                     contents[i], count + 1,))
         finally:
             lck.release()
@@ -400,7 +412,7 @@ class DocumentDBClient():
     def get_members(self, doc_id):
         return pickle.loads(get_proxy().get_members(doc_id).data)
 
-    def push_updates(self, doc_id, deltas):
+    def push_updates(self, doc_id, deltas, last_update):
         locations = []
         contents = []
         lengths = []
@@ -414,7 +426,7 @@ class DocumentDBClient():
                 contents.append(d.string)
                 lengths.append(0)
         
-        return get_proxy().push_updates(doc_id, locations, contents, lengths)
+        return get_proxy().push_updates(doc_id, locations, contents, lengths, last_update)
 
     def push_insert(self, doc_id, insert):
         return get_proxy().push_update(doc_id, insert.location, insert.string, 0)

@@ -254,7 +254,7 @@ class DocumentScreen:
         
         deltas = self.currentDoc.generateDeltas(old,new)
         self.currentDoc.words= new
-        doc_cli.push_updates(self.currentDoc.doc_id, deltas)
+        doc_cli.push_updates(self.currentDoc.doc_id, deltas, self.lastChange)
         
         
         self.pullChanges()
