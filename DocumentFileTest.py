@@ -214,7 +214,7 @@ class DocumentScreen:
     def addUserComplaint(self):
         from DocumentDB import doc_cli
         complaint=tkSimpleDialog.askstring("Enter Complain Against User","Complaint")
-        doc_cli.add_complaint(self.currentUser,complaint)
+        doc_cli.add_complaint(self.currentUser.getUserName(),complaint)
         
     def addDeltaToDisplay(self,oldDeltas,newDeltas):
         for i in range(0,len(newDeltas)):

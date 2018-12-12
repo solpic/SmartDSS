@@ -25,6 +25,7 @@ class ProcessTabooWord():
         Button(frame2, text="Deny", font=('Ariel', 14), fg="medium blue", command =self.deleteTabooword).grid(row=0, column=2, padx=2, pady=5)
         Button(frame2, text="Exit", font=('Ariel', 14), fg="medium blue", command = self.quit).grid(row=0, column=3, padx=2,  pady=5)
 
+        self.getTaboowords()
         frame1.pack()
 
     def getTaboowords(self):

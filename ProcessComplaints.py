@@ -34,14 +34,19 @@ class ProcessComplaints():
         Label(frame3, text="Document ID", font=('Ariel', 12), fg="medium blue").grid(row=1, column=0)
         Entry(frame3, textvariable=self.doc_id).grid(row=1, column=1)
         Button(frame3, text="Remove Member", font=('Ariel', 14), fg="medium blue", command=self.removeMember).grid(row=0, column=2,
+        
                                                                                                        padx=2, pady=5)
+        
+        self.getComplaints()
         frame1.pack()
+        
 
     def getComplaints(self):
         self.complaintsSearch = doc_cli.get_complaints()
+        entries = []
         for entry in self.complaintsSearch:
-            print("PM entry", entry)
-        self.compvar.set(self.complaintsSearch)
+            entries.append([entry.text, entry.user])
+        self.compvar.set(entries)
 
     def deleteComplaint(self):
         item = self.curselection()

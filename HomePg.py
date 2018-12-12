@@ -58,6 +58,7 @@ class HomePg():
         Button(frame5, text="Open Document", command = self.opendocument, font=('Ariel', 22), fg="medium blue", background="white", width =14).grid(
             row=3, column=0, pady=5)
 
+        self.docsearch()
         frame1.pack()
 
 
@@ -74,7 +75,9 @@ class HomePg():
         searchItem = self.docName.get()
         names = []
         for doc in docs:
-            if searchItem in doc.docName:
+            print(doc.docName)
+            print(searchItem)
+            if searchItem in doc.docName and (doc.privacyLevel=="public" or doc.privacyLevel=="restricted"):
                 entry = (doc.docName, doc.owner, doc.versionNumber)
                 names.append(entry)
         self.documentSearch = names
