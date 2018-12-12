@@ -125,7 +125,8 @@ class UserPg():
         self.searchResultDocs = Listbox(frame7, listvariable=self.docvar, width=50)
         self.searchResultDocs.grid(row=2, column=0, sticky=E, padx=10)
         for entry in self.documentSearch:
-            print("entry", entry)
+            self.searchResultDocs.insert(entry)
+
         Button(frame7, text="Open Document", font=('Ariel', 24), fg="medium blue", width=16, background="white",
                command=self.opendocument).grid(row=3, column=0, pady=5)
         Label(frame7, height=12).grid(row=5, column=0)

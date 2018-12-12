@@ -51,11 +51,11 @@ class HomePg():
         searchpicD = Button(frame5, image=simg, command=self.docsearch)
         searchpicD.image = simg
         searchpicD.grid(row=1, column=1)
-        searchResultDocs = Listbox(frame5, listvariable=self.docvar, width=38).grid(row=2, column=0, sticky=E, padx=10)
+        self.searchResult = Listbox(frame5, listvariable=self.docvar, width=38)
+        self.searchResult.grid(row=2, column=0, sticky=E, padx=10)
         for entry in self.documentSearch:
-            print("entry", entry)
-            searchResultDocs.insert(entry)
-        Button(frame5, text="Open Document", font=('Ariel', 22), fg="medium blue", background="white", width =14).grid(
+            self.searchResult.insert(entry)
+        Button(frame5, text="Open Document", command = self.opendocument, font=('Ariel', 22), fg="medium blue", background="white", width =14).grid(
             row=3, column=0, pady=5)
 
         frame1.pack()
@@ -75,19 +75,24 @@ class HomePg():
         names = []
         for doc in docs:
             if searchItem in doc.docName:
-                names.append(doc.docName)
+                entry = (doc.docName, doc.owner, doc.versionNumber)
+                names.append(entry)
         self.documentSearch = names
         self.docvar.set(names)
 
-# Function to open a document
+
+#Function to open a document
     def opendocument(self):
-        item = self.searchResultDocs.curselection()
+        item = self.searchResult.curselection()
         idx = item[0]
         docdetail = self.documentSearch[idx]
+        print(docdetail)
         document = docdetail[0]
+        print(document)
         usern = docdetail[1]
         versionNo = docdetail[2]
         DocumentFileTest.DocumentScreen(user(usern), doc_cli.get_document(document, usern, versionNo))
+
 
 if __name__== "__main__":
     root = Tk()
