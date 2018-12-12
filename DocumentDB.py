@@ -329,6 +329,9 @@ class DocumentDBServer():
 class DocumentDBClient():
     def show_all_users(self):
         get_proxy().show_all_users()
+    
+    def get_all_users(self):
+        return pickle.loads(get_proxy().get_all_users().data)
 
     def make_document(self, row):
         from DocumentModel import DocumentModel

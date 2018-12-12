@@ -160,8 +160,13 @@ class UserPg():
 # This function searches for a Member based on name
     def memSearch(self):
         user = self.memberName.get()
-        self.memberSearch = doc_cli.searchUser(user)
-        self.var.set(self.memberSearch)
+        users = doc_cli.get_all_users()
+        res = []
+        for u in users:
+            if user in u:
+                res.append(u)
+                
+        self.var.set(res)
 
 # This function searches for a member based on Interests
     def intSearch(self):
