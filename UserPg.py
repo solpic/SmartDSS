@@ -198,14 +198,12 @@ class UserPg():
                 entry = (doc.docName, doc.owner, doc.versionNumber, doc.createDate)
                 self.userDocs.append(entry)
         #sort this array
-        self.userDocs.sort(key=self.sortdate)
+        self.userDocs.sort(key=self.sortdate, reverse=TRUE)
         for doc in docs:
             if self.user not in doc.owner:
                 entry = (doc.docName, doc.owner, doc.versionNumber, doc.createDate)
                 self.userDocs.append(entry)
-        for doc in docs:
-            entry = (doc.docName, doc.owner, doc.versionNumber, doc.createDate)
-            names.append(entry)
+
 
     def sortdate(self, val):
         return val[3]
