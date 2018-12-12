@@ -251,12 +251,7 @@ class DocumentScreen:
         
         deltas = self.currentDoc.generateDeltas(old,new)
         self.currentDoc.words= new
-        for delta in deltas:
-            delta.show()
-            if(isinstance(delta,DeltaObjects.Delete)):
-                doc_cli.push_delete(self.currentDoc.doc_id,delta)
-            if(isinstance(delta,DeltaObjects.Insert)):
-                doc_cli.push_insert(self.currentDoc.doc_id,delta)
+        doc_cli.push_updates(deltas)
         doc_cli.show_all_updates()
         
         
