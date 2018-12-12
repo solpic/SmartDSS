@@ -1,7 +1,10 @@
 from tkinter import*
-from tkinter import Listbox
 from DocumentDB import doc_cli
+import Users1
+import DocumentFileTest
+from DocumentScreenTester import user
 import ProcessMember
+import createfilepopup
 
 import DocumentFileTest
 from DocumentScreenTester import user
@@ -29,9 +32,9 @@ class UserPg():
         self.invar = StringVar(value=self.interestsSearch)
         self.var = StringVar(value=self.memberSearch)
         self.docvar = StringVar(value= self.documentSearch)
-        self.Interest1 = doc_cli.getInterest1(username)
-        self.Interest2 = doc_cli.getInterest2(username)
-        self.Interest3 = doc_cli.getInterest3(username)
+        self.Interest1 = self.UserDetailService.getInterest1(username)
+        self.Interest2 = self.UserDetailService.getInterest2(username)
+        self.Interest3 = self.UserDetailService.getInterest3(username)
         self.createWidget()
 
     def createWidget(self):
@@ -123,8 +126,6 @@ class UserPg():
             OUdocpic.image = docimg
             OUdocpic.grid(row=1, column=1)
 
-
-
         self.frame1.pack()
 
 
@@ -134,14 +135,14 @@ class UserPg():
 
     def memSearch(self):
         user = self.memberName.get()
-        self.memberSearch = doc_cli.searchUser(user)
+        self.memberSearch = self.UserDetailService.searchUser(user)
         for entry in self.memberSearch:
             print("bottom entry", entry)
         self.var.set(self.memberSearch)
 
     def intSearch(self):
         user = self.memberInt.get()
-        self.interestsSearch = doc_cli.searchUserInt(user)
+        self.interestsSearch = self.UserDetailService.searchUserInt(user)
         for entry in self.interestsSearch:
             print("bottom entry", entry)
         self.invar.set(self.interestsSearch)
@@ -149,14 +150,13 @@ class UserPg():
     def docSearch(self):
         docs = doc_cli.get_all_documents()
         searchItem = self.docName.get()
-        
+
         names = []
         for doc in docs:
             if searchItem in doc.docName:
                 entry = (doc.docName, doc.owner, doc.versionNumber)
                 names.append(entry)
         self.documentSearch = names
-        
         for entry in self.documentSearch:
             print("search", entry)
         self.docvar.set(names)
@@ -167,9 +167,10 @@ class UserPg():
         doc_name = simpledialog.askstring("Document Name", "Name of new document?")
         versionNo = 0
         init_contents =""
-        doc_cli.create_document( doc_name, self.user, init_contents)
+        doc_name, privacy_level = createfilepopup.createfileinput.main(self)
+        doc_cli.create_document(doc_name, self.user, init_contents)
         doc_cli.get_document(doc_name, self.user, versionNo)
-        #DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
+        DocumentFileTest.DocumentScreen(user(user), doc_cli.get_document(doc_name, self.user, versionNo))
 
     def opendoc(self):
         item = self.searchResultDocs.curselection()
