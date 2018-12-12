@@ -163,7 +163,7 @@ class UserPg():
         users = doc_cli.get_all_users()
         res = []
         for u in users:
-            if user in u:
+            if user in u[0]:
                 res.append(u)
                 
         self.var.set(res)
