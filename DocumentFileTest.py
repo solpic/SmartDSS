@@ -15,8 +15,6 @@ class DocumentScreen:
         from DocumentDB import doc_cli
         #self.allUsers = doc_cli.get_all_sys_Users() #TODO: Server Call
         self.allUsers = ["ARI","ME","JAS"]
-        from RPCClient import get_proxy
-        get_proxy().delete_updates(1, 0, 100)
         self.makeScreen()
 
 
