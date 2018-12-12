@@ -247,6 +247,7 @@ class DocumentScreen:
                 doc_cli.push_insert(self.currentDoc.doc_id,delta)
         doc_cli.show_all_updates()
         
+        
         self.pullChanges()
 
         # DEBUG CODE
