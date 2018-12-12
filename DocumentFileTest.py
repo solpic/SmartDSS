@@ -230,6 +230,13 @@ class DocumentScreen:
         from DocumentDB import doc_cli
         old = self.currentDoc.getWords()
         new = self.txt.get("1.0",'end-1c')
+        
+        import re
+        tabooWords = TabooWords.TabooWord.getAllTaboo()
+        for w in tabooWords:
+            pattern = re.compile(w.text, re.IGNORECASE)
+            new = pattern.sub("UNK", new)
+        
         deltas = self.currentDoc.generateDeltas(old,new)
         self.currentDoc.words= new
         for delta in deltas:
@@ -239,6 +246,8 @@ class DocumentScreen:
             if(isinstance(delta,DeltaObjects.Insert)):
                 doc_cli.push_insert(self.currentDoc.doc_id,delta)
         doc_cli.show_all_updates()
+        
+        self.pullChanges()
 
         # DEBUG CODE
         # deltaListServ = doc_cli.get_updates(self.currentDoc.doc_id,0)
