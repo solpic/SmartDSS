@@ -73,10 +73,12 @@ class SignUp():
         joindate = str(date.today())
         Application = 'GU'
 
-
         usern = doc_cli.getUsername(username)
-        username1 = (username,)
-
+        print(usern)
+        if usern == None:
+            usern2 =""
+        else:
+            usern2 = usern[0]
 
         if(username == "" ):
             messagebox.showwarning("Warning",
@@ -90,7 +92,7 @@ class SignUp():
             messagebox.showwarning("Warning",
                                    "Application needs all items to be completed to be successfully submitted")
 
-        elif (username1 == usern):
+        elif (usern2 == username):
             messagebox.showwarning("Warning",
                                    "Username already taken. Please try another one")
             self.signinFrame.destroy()

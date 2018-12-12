@@ -1,7 +1,7 @@
 from tkinter import*
+from DocumentDB import doc_cli
 
-
-class MemberApplication():
+class ProcessTabooWord():
     def __init__(self):
         root = self.root = Toplevel()
         root.title('Process Taboo Words')
@@ -17,7 +17,7 @@ class MemberApplication():
 
         self.taboowordslist = Listbox(frame1, listvariable=self.taboovar, width=50)
         self.taboowordslist.grid(row=1, column=0, padx=5, pady=5)
-        for entry in self.taboowordsSearch:
+        for entry in self.taboowordSearch:
             print("entry", entry)
             self.taboowordslist.insert(entry)
         Button(frame2, text="View", font=('Ariel', 14), fg="medium blue", command=self.getTaboowords).grid(row=0, column=0,padx=2, pady=5)
@@ -28,37 +28,38 @@ class MemberApplication():
         frame1.pack()
 
     def getTaboowords(self):
-
-        ## Need function to get an array of proposed Taboo Words
-        for entry in self.applicationSearch:
-            print("PM entry", entry)
-        self.appvar.set(self.applicationSearch)
+        words = doc_cli.get_taboo_words()
+        self.taboowordSearch = []
+        for word in words:
+            status = "Pending Approval" if word.status==0 else "Approved"
+            self.taboowordSearch.append([word.text, status])
+     #  for entry in self.taboowordSearch:
+     #       print("PM entry", entry)
+        self.taboovar.set(self.taboowordSearch)
 
     def acceptTabooword(self):
         item = self.taboowordslist.curselection()
         idx = item[0]
-        Tabooword = self.applicationSearch[idx]
+        Tabooword = self.taboowordSearch[idx]
         NewTabooword = Tabooword[0]
+        doc_cli.accept_taboo_word(NewTabooword)
+        self.getTaboowords()
 
-        ##Need function to update Taboo word from proposed to actual
-        ## The run the getTabooWords function to put in a revised list
-
-        self.taboovar.set(self.taboowordSearch)
 
     def deleteTabooword(self):
         item = self.taboowordslist.curselection()
         idx = item[0]
-        Tabooword = self.applicationSearch[idx]
+        Tabooword = self.taboowordSearch[idx]
         DeletedTabooWord = Tabooword[0]
-        ## Need function to delete the taboo word from the db
-        ## Need to rerun getTabooWords function to put in a revised list
+        doc_cli.delete_taboo_word(DeletedTabooWord)
+        self.getTaboowords()
 
-        self.taboovar.set(self.taboowordSearch)
 
     def quit(self):
         self.root.destroy()
 
     def main(self):
-        Applicationgui = MemberApplication()
-        Applicationgui.root.mainloop()
+        TabooWordsgui = ProcessTabooWord()
+        TabooWordsgui.root.mainloop()
+
 
