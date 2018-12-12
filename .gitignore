@@ -1,3 +1,8 @@
 *.pyc
 __pycache__
 *.db
+startall
+starteditor
+startserver
+dingleberry.pem
+connectaws

@@ -6,6 +6,9 @@ from DocumentScreenTester import user
 import ProcessMember
 import createfilepopup
 
+import DocumentFileTest
+from DocumentScreenTester import user
+
 class UserPg():
 
     def __init__(self, parent, username):
@@ -17,8 +20,8 @@ class UserPg():
         parent.geometry("{0}x{1}+0+0".format(
             parent.winfo_screenwidth(), parent.winfo_screenheight()))
         self.parent.configure(background="white")
-        self.UserDetailService = Users1.Users()
-        self.rank = self.UserDetailService.getRank(username)
+        
+        self.rank = doc_cli.getRank(username)
         self.memberName = StringVar()
         self.memberInt = StringVar()
         self.docName = StringVar()
@@ -160,7 +163,8 @@ class UserPg():
 
     def createnewdoc(self):
         print("new document")
-
+        from tkinter import simpledialog
+        doc_name = simpledialog.askstring("Document Name", "Name of new document?")
         versionNo = 0
         init_contents =""
         doc_name, privacy_level = createfilepopup.createfileinput.main(self)

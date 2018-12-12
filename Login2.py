@@ -38,22 +38,19 @@ class Login():
         password = self.loginPass.get()
         
         doc_cli.show_all_users()
-        passwordA = doc_cli.getPassword(username)
+        passwordA = doc_cli.getPassword(username)[0]
+        passwordN = password
         
-        passwordN = (password,)
         if(username == NONE):
              print("Error no username")
         if(passwordA == passwordN):
              self.showLoged(username)
-        x1 = Users1.Users()
 
         if username == "":
              messagebox.showerror("Error", "Please enter a username and password")
         else:
-            passwordA = x1.getPassword(username)
 
-            rank = x1.getRank(username)
-            passwordN = (password,)
+            rank = doc_cli.getRank(username)
             if rank == 'GU':
                 messagebox.showwarning("Warning",
                                    "Membership Application has not yet been approved so cannot log on")

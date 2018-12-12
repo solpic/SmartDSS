@@ -142,7 +142,9 @@ class DocumentScreen:
         scrollb = Scrollbar(textFrame, command=self.txt.yview)
         scrollb.grid(row=0, column=2, sticky='nsew')
         self.txt['yscrollcommand'] = scrollb.set    
-        self.root.config(menu=self.mainMenu)    
+        self.root.config(menu=self.mainMenu)   
+        # Get changes from server
+        self.pullChanges() 
         self.root.mainloop()
 #--- END MAKE SCREEN ------------------------------
 
