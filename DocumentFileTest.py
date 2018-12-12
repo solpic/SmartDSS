@@ -265,7 +265,7 @@ class DocumentScreen:
         from DocumentDB import doc_cli
         doc_cli.show_all_updates()
         oldDeltaList = self.currentDoc.deltaLog
-        deltaList= doc_cli.get_updates(self.currentDoc.doc_id,self.lastChange)
+        deltaList= doc_cli.get_updates(self.currentDoc.doc_id,0)
         for i in deltaList:
             i.show()
         self.currentDoc.reconstruct(5,deltaList)
