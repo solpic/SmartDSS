@@ -205,7 +205,7 @@ class DocumentScreen:
     #  - adding member button
     def lockDocument(self):
         off="disabled"
-        self.txt.config(state=off)
+        #self.txt.config(state=off)
         self.changeMenu.entryconfigure("Submit Changes",state=off)
         self.changeMenu.entryconfigure("Pull Staged Changes",state=off)
         self.updateMembersMenu.entryconfigure("Remove/View Members",state=off)
@@ -213,7 +213,7 @@ class DocumentScreen:
         self.currentDoc.lockDocument()
     def unlockDocument(self):
         on = "normal"
-        self.txt.config(state=on)
+        #self.txt.config(state=on)
         self.changeMenu.entryconfigure("Submit Changes",state=on)
         self.changeMenu.entryconfigure("Pull Staged Changes",state=on)
         self.updateMembersMenu.entryconfigure("Remove/View Members",state=on)
@@ -255,7 +255,10 @@ class DocumentScreen:
         doc = doc_cli.get_document(self.currentDoc.docName, self.currentDoc.owner, 0)
         if doc.owner!=self.currentUser.getUserName() and doc.locked==1:
             self.pullChanges()
+            self.txt.config(state=off)
             return
+        else:
+            self.txt.config(state=on
         old = self.currentDoc.getWords()
         new = self.txt.get("1.0",'end-1c')
         
