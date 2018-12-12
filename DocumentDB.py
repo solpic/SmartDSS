@@ -428,6 +428,9 @@ class DocumentDBClient():
 
     def setUser(self, username):
         return get_proxy().setUser(username)
+        
+    def removeUser(self, username):
+        return get_proxy().removeUser(username)
 
     def removeUser(self, username):
         return get_proxy().removeUser(username)

@@ -32,17 +32,27 @@ class DocumentModel():
     # TODO: How does this work?/ What does it do?
         return 5
     def lockDocument(self):
-        self.locked=True
+        from DocumentDB import doc_cli
+        if doc_cli.set_document_lock(self.docName,self.owner,self.versionNumber,self.locked):
+            self.locked=1
+        
     def unlockDocument(self):
-        self.locked=False
+        from DocumentDB import doc_cli
+        if doc_cli.set_document_lock(self.docName,self.owner,self.versionNumber,self.locked):
+            self.locked=0
 
     def addMember(self, member):
-        self.memberList.append(member)
+        from DocumentDB import doc_cli
+        if doc_cli.add_member(self.doc_id,member):
+            self.memberList.append(member)
+
     def removeMember(self,member):
+        from DocumentDB import doc_cli
         targetUName = member.getUserName()
-        for i in range(0,len(self.memberList)):
-            if (self.memberList[i].getUserName()==targetUName):
-                del member[i]
+        if doc_cli.remove_member(self.doc_id,member):
+            for i in range(0,len(self.memberList)):
+                if (self.memberList[i].getUserName()==targetUName):
+                    del member[i]
     
     def addComplaint(self, complaint,currUser):
         complaintObj = Complaint.Complaint(complaint,currUser)
