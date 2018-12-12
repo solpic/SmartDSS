@@ -1,9 +1,9 @@
 from tkinter import*
 import sqlite3
-import Users1
 import UserPg
 import HomePg
-#from RPCClient import get_proxy
+from DocumentDB import doc_cli
+
 class Login():
     def __init__(self):
         root = self.root = Toplevel()
@@ -35,8 +35,9 @@ class Login():
     def login(self):
         username = self.loginName.get()
         password = self.loginPass.get()
-        x1 = Users1.Users()
-        passwordA = x1.getPassword(username)
+        doc_cli.show_all_users()
+        passwordA = doc_cli.getPassword(username)
+        
         passwordN = (password,)
         if(username == NONE):
              print("Error no username")

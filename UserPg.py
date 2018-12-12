@@ -1,7 +1,6 @@
 from tkinter import*
 from tkinter import Listbox
-
-import Users1
+from DocumentDB import doc_cli
 
 class UserPg():
 
@@ -14,7 +13,7 @@ class UserPg():
         parent.geometry("{0}x{1}+0+0".format(
             parent.winfo_screenwidth(), parent.winfo_screenheight()))
         self.parent.configure(background="white")
-        self.UserDetailService = Users1.Users()
+        
         self.rank = self.UserDetailService.getRank(username)
         self.memberName = StringVar()
         self.memberInt = StringVar()
@@ -25,9 +24,9 @@ class UserPg():
         self.invar = StringVar(value=self.interestsSearch)
         self.var = StringVar(value=self.memberSearch)
         self.docvar = StringVar(value= self.documentSearch)
-        self.Interest1 = self.UserDetailService.getInterest1(username)
-        self.Interest2 = self.UserDetailService.getInterest2(username)
-        self.Interest3 = self.UserDetailService.getInterest3(username)
+        self.Interest1 = doc_cli.getInterest1(username)
+        self.Interest2 = doc_cli.getInterest2(username)
+        self.Interest3 = doc_cli.getInterest3(username)
         self.createWidget()
 
     def createWidget(self):
@@ -121,21 +120,21 @@ class UserPg():
 
     def memSearch(self):
         user = self.memberName.get()
-        self.memberSearch = self.UserDetailService.searchUser(user)
+        self.memberSearch = doc_cli.searchUser(user)
         for entry in self.memberSearch:
             print("bottom entry", entry)
         self.var.set(self.memberSearch)
 
     def intSearch(self):
         user = self.memberInt.get()
-        self.interestsSearch = self.UserDetailService.searchUserInt(user)
+        self.interestsSearch = doc_cli.searchUserInt(user)
         for entry in self.interestsSearch:
             print("bottom entry", entry)
         self.invar.set(self.interestsSearch)
 
     def docSearch(self):
         searchItem = self.docName.get()
-        self.documentSearch = self.UserDetailService.searchtestUser(searchItem)
+        self.documentSearch = doc_cli.searchtestUser(searchItem)
         for entry in self.documentSearch:
             print("bottom entry", entry)
         self.docvar.set(self.documentSearch)

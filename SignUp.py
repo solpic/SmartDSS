@@ -1,7 +1,7 @@
 from tkinter import*
 from tkinter import messagebox
 from datetime import date
-import Users1
+from DocumentDB import doc_cli
 import sqlite3
 
 class SignUp():
@@ -73,13 +73,9 @@ class SignUp():
         joindate = str(date.today())
         Application = 'GU'
 
-        x1 = Users1.Users()
-        usern = x1.getUsername(username)
-        username1 = (username,)
 
-      #  c.execute('''CREATE TABLE t
-      #              (username text NOT NULL PRIMARY KEY, password text, Fname text, Lname text, Interest1 text,
-      #   Interest2 text, Interest3 text, joindate date, type text)''')
+        usern = doc_cli.getUsername(username)
+        username1 = (username,)
 
 
         if(username == "" ):
@@ -99,8 +95,7 @@ class SignUp():
                                    "Username already taken. Please try another one")
             self.signinFrame.destroy()
         else:
-            x1 = Users1.Users()
-            userEntry = x1.createUSer(username, password, Fname, Lname, Interest1, Interest2, Interest3, joindate,
+            userEntry = doc_cli.createUSer(username, password, Fname, Lname, Interest1, Interest2, Interest3, joindate,
                                       Application)
             self.quit()
 
