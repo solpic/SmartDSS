@@ -48,7 +48,7 @@ class DocumentModel():
 
     def removeMember(self,member):
         from DocumentDB import doc_cli
-        targetUName = member.getUserName()
+        targetUName = member
         if doc_cli.remove_member(self.doc_id,member):
             for i in range(0,len(self.memberList)):
                 if (self.memberList[i].getUserName()==targetUName):

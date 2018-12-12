@@ -94,7 +94,7 @@ class DocumentDBServer():
         print(usern)
         return True
 
-    # TODO: Requested Features from Arik:
+    # TODO: FIX THIS, currently doesnt work
     def getRank(self, username):
         user = (username,)
         self.c.execute('SELECT type FROM users WHERE username= ? ', user)
