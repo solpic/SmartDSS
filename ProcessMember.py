@@ -15,27 +15,25 @@ class MemberApplication():
         frame1 = Frame(self.root)
         frame2 = Frame(frame1)
         frame2.grid(row=3,column=0)
-
-      #  Label(frame1, text="Memebership Applications", font=('Ariel', 14), fg="medium blue", width=15).grid(row=0,column=0)
+    #List box of applications
         self.mapplications = Listbox(frame1, listvariable=self.appvar, width=50)
         self.mapplications.grid(row=1, column=0, padx=5, pady=5)
         for entry in self.applicationSearch:
             print("entry", entry)
             self.mapplications.insert(entry)
+    #Buttons to process the applications
         Button(frame2, text="View", font=('Ariel', 14), fg="medium blue", command=self.getApplications).grid(row=0, column=0,padx=2, pady=5)
         Button(frame2, text="Accept", font=('Ariel', 14), fg="medium blue", command = self.acceptMember).grid(row=0, column=1, padx=2, pady=5)
         Button(frame2, text="Deny", font=('Ariel', 14), fg="medium blue", command =self.deleteMember).grid(row=0, column=2, padx=2, pady=5)
         Button(frame2, text="Exit", font=('Ariel', 14), fg="medium blue", command = self.quit).grid(row=0, column=3, padx=2,  pady=5)
 
-        self.getApplications()
         frame1.pack()
-
+#function to get all member applcations from the db
     def getApplications(self):
         self.applicationSearch = doc_cli.getMemberAppl()
-        for entry in self.applicationSearch:
-            print("PM entry", entry)
         self.appvar.set(self.applicationSearch)
 
+# function to change the user to a OU and thus become a member
     def acceptMember(self):
         item = self.mapplications.curselection()
         idx = item[0]
@@ -45,6 +43,7 @@ class MemberApplication():
         self.applicationSearch = doc_cli.getMemberAppl()
         self.appvar.set(self.applicationSearch)
 
+# refuse the application and delete it from the system
     def deleteMember(self):
         item = self.mapplications.curselection()
         idx = item[0]
