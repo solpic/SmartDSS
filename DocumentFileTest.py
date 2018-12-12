@@ -7,12 +7,13 @@ import DeltaObjects
 #TODO: Real User Class Integration
 class DocumentScreen:
     def __init__(self,user,document):
+        from DocumentDB import doc_cli
         self.lastChange = -1
         self.currentUser = user;
-        self.userRank = user.getRank()
+        self.userRank =user.getRank()
+        #self.userRank = doc_cli.getRank(self.currentUser)
         self.currentDoc= document
         # self.docMembers = document.getMembers()
-        from DocumentDB import doc_cli
         #self.allUsers = doc_cli.get_all_sys_Users() #TODO: Server Call
         self.allUsers = ["ARI","ME","JAS"]
         self.makeScreen()
@@ -48,38 +49,39 @@ class DocumentScreen:
 
         # Document Options Menu
         optMenu = Menu(self.mainMenu)
-        optMenu.add_command(label="View Past Versions")#command = ???? Something to view previous docs
         optMenu.add_command(label="Lock Document",command=self.lockDocument)#command = lockDocument 
         optMenu.add_command(label="Unlock Document",command=self.unlockDocument)#command = unLockDocument
+        self.pastVerMenu = Menu(optMenu)
+        num = 0
+        for delta in self.currentDoc.deltaLog:
+            self.pastVerMenu.add_command(label = delta.show() + "NUM: " + str(num) )
+            num+=1
+        optMenu.add_cascade(label="Load Past Versions", menu=self.pastVerMenu)#command = ???? Something to view previous docs
         self.mainMenu.add_cascade(label="Document Options", menu=optMenu)
         
         # Membership Options Menu
 
-        membOptMenu = Menu(self.mainMenu)
-        membOptMenu.add_command(label="Update Member(s)")
-        #TODO: add members/ remove members
-        self.updateMembersMenu = Menu(membOptMenu)
-        # self.updateMembersMenu.add_command(label="Add User",command=self.addUser)
-        # self.updateMembersMenu.add_command(label="Remove User",command=self.removeUser)
+        #membOptMenu = Menu(self.mainMenu)
+        #membOptMenu.add_command(label="Update Member(s)")
+
+        self.updateMembersMenu = Menu(self.mainMenu)
+
         
-        membOptMenu.add_cascade(label="Update Members", menu=self.updateMembersMenu)
-        self.allMembersMenu = Menu(membOptMenu)
-        #TODO: UNcommetn 2 lower lines
-        #for member in self.currentDoc.getMembers():
-            #self.allMembersMenu.add_command(label=member.getUserName(),command=self.removeUser(member.getUserName()))
+        self.allMembersMenu = Menu(self.updateMembersMenu)
+        self.allUserMenu = Menu(self.updateMembersMenu) #For Removing Members
+        #membOptMenu.add_cascade(label="Update Members", menu=self.updateMembersMenu)
+        self.allMembersMenu.add_command(label="All Members Menu")
+        #TODO: Real Code:: for member in self.currentDoc.getMembers():
+        for member in self.allUsers:
+            self.allMembersMenu.add_command(label=member,command=lambda i= member: self.removeUser(i))
         self.allUserMenu = Menu(self.updateMembersMenu)
-        # allMembersMenu.add_command(label="xyz")
-        for member in self.currentDoc.getMembers():
-            #self.allMembersMenu.add_command(label=member.getUserName())
-            self.allMembersMenu.add_command(label=memeber.getUserName(),command=lambda i= user: self.removeUser(i))
-        # self.updateMembersMenu.add_cascade(label="Remove User", menu=self.allMembersMenu)
-        self.allUserMenu = Menu(self.updateMembersMenu)
+        self.allUserMenu.add_command(label="All Users Menu")
         for user in self.allUsers:
-            self.allUserMenu.add_command(label=user)
-        self.updateMembersMenu.add_cascade(label="Remove Member", menu=self.allMembersMenu)
+            self.allUserMenu.add_command(label=user,command=lambda j = user: self.addUser(j))
+        self.updateMembersMenu.add_cascade(label="Remove/View Members", menu=self.allMembersMenu)
         self.updateMembersMenu.add_cascade(label="All Registered System Users",menu=self.allUserMenu)
-        membOptMenu.add_cascade(label="View All Members", menu=self.allMembersMenu)
-        self.mainMenu.add_cascade(label="Membership Option",menu=membOptMenu)
+        #membOptMenu.add_cascade(label="View All Members", menu=self.allMembersMenu)
+        self.mainMenu.add_cascade(label="Membership Option",menu=self.updateMembersMenu)
 
         # Taboo Word Menu
         self.tabooMenu = Menu(self.mainMenu)
@@ -97,14 +99,14 @@ class DocumentScreen:
         docComplaintMenu = Menu(self.mainMenu)
         complaints = self.currentDoc.getComplaints()
         for complaint in complaints:
-            docComplaintMenu.add_command(label=complaint)
+            docComplaintMenu.add_command(label=complaint.text)
         self.mainMenu.add_cascade(label="View Document Complaints",menu=docComplaintMenu)
 
         # Submit Menu
-        changeMenu = Menu(self.mainMenu)
-        changeMenu.add_command(label="Submit Changes",command= self.submitChanges)
-        changeMenu.add_command(label="Pull Staged Changes",command = self.pullChanges)
-        self.mainMenu.add_cascade(label="PUSH/PULL",menu=changeMenu)
+        self.changeMenu = Menu(self.mainMenu)
+        self.changeMenu.add_command(label="Submit Changes",command= self.submitChanges)
+        self.changeMenu.add_command(label="Pull Staged Changes",command = self.pullChanges)
+        self.mainMenu.add_cascade(label="PUSH/PULL",menu=self.changeMenu)
 
 
         # --Dynamic Buttons----------------------------------------------------------------------
@@ -150,25 +152,25 @@ class DocumentScreen:
     def refreshText(self):
         self.txt.delete(1.0,END)
         self.txt.insert(END,self.currentDoc.words)
-    def addUser(self):
-        print("Add User Function")
-        self.updateMembersMenu
+    def addUser(self,user):
+        print("Add User To Document Function")
+        self.currentDoc.addMember(user)
     def removeUser(self,uname):
-        from DocumentDB import doc_cli
-
+       
         print("Remove User Function , uname: {}".format(uname))
         x=0
         
         mem = self.currentDoc.getMembers()
-        
+        delmem=""
         for i in range(0,len(mem)):
-            if (mem[i].getUserName()==uname):
+            if (mem[i]==uname):
                 x=i
                 delmem = mem[i]
                 break
 
 
         self.allMembersMenu.delete(x)
+        self.allUserMenu.destroy
         self.currentDoc.removeMember(delmem)
     #PostCond: The inputed Word is added to the DB of Taboo Words
     def addTabooWord(self):
@@ -184,18 +186,35 @@ class DocumentScreen:
     #  - submit button
     #  - adding member button
     def lockDocument(self):
-        self.txt.config(state="disabled")
+        off="disabled"
+        self.txt.config(state=off)
+        self.changeMenu.entryconfigure("Submit Changes",state=off)
+        self.changeMenu.entryconfigure("Pull Staged Changes",state=off)
+        self.updateMembersMenu.entryconfigure("Remove/View Members",state=off)
+        self.updateMembersMenu.entryconfigure("All Registered System Users",state=off)
         self.currentDoc.lockDocument()
     def unlockDocument(self):
-        self.txt.config(state="normal")
+        on = "normal"
+        self.txt.config(state=on)
+        self.changeMenu.entryconfigure("Submit Changes",state=on)
+        self.changeMenu.entryconfigure("Pull Staged Changes",state=on)
+        self.updateMembersMenu.entryconfigure("Remove/View Members",state=on)
+        self.updateMembersMenu.entryconfigure("All Registered System Users",state=on)
+
         self.currentDoc.unlockDocument()
     def addDocComplaint(self):
         complaint=tkSimpleDialog.askstring("Enter Complaint against Document","Complaint:")
         self.currentDoc.addComplaint(complaint,self.currentUser)
     def addUserComplaint(self):
-        complaint=tkSimpleDialog.askstring("Enter Complain Against User")
-        self.currentUser.addComplaint()
-
+        from DocumentDB import doc_cli
+        complaint=tkSimpleDialog.askstring("Enter Complain Against User","Complaint")
+        doc_cli.add_complaint(self.currentUser,complaint)
+        
+    def addDeltaToDisplay(self,oldDeltas,newDeltas):
+        for i in range(0,len(newDeltas)):
+            if(i>len(oldDeltas)):
+                self.pastVerMenu.add_command(label= newDeltas[i].show() + "NUM: " + str(i), 
+                command = lambda k = i, d=self.currentDoc.deltaLog:self.currentDoc.sRec(k,d))
     def submitChanges(self):
         from DocumentDB import doc_cli
         old = self.currentDoc.getWords()
@@ -210,6 +229,8 @@ class DocumentScreen:
             if(isinstance(delta,DeltaObjects.Insert)):
                 doc_cli.push_insert(self.currentDoc.doc_id,delta)
         doc_cli.show_all_updates()
+
+        # DEBUG CODE
         # deltaListServ = doc_cli.get_updates(self.currentDoc.doc_id,0)
         # print("DeltaList Server")
         # for i in deltaListServ:
@@ -227,6 +248,7 @@ class DocumentScreen:
     def pullChanges(self):
         from DocumentDB import doc_cli
         doc_cli.show_all_updates()
+        oldDeltaList = self.currentDoc.deltaLog
         deltaList= doc_cli.get_updates(self.currentDoc.doc_id,self.lastChange)
         for i in deltaList:
             i.show()
@@ -237,5 +259,5 @@ class DocumentScreen:
         else:
             self.lastChange = -1
 
-    # TODO: UPDATING SCREEN WITH NEW INFO
-    # For Menu we can destroy and re build
+        self.addDeltaToDisplay(oldDeltaList,deltaList)
+
