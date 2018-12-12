@@ -28,8 +28,11 @@ class ProcessTabooWord():
         frame1.pack()
 
     def getTaboowords(self):
-        self.taboowordSearch = doc_cli.get_taboo_words
-        print(self.taboowordSearch)
+        words = doc_cli.get_taboo_words()
+        self.taboowordSearch = []
+        for word in words:
+            status = "Pending Approval" if word.status==0 else "Approved"
+            self.taboowordSearch.append([word.text, status])
      #  for entry in self.taboowordSearch:
      #       print("PM entry", entry)
         self.taboovar.set(self.taboowordSearch)
@@ -40,18 +43,16 @@ class ProcessTabooWord():
         Tabooword = self.taboowordSearch[idx]
         NewTabooword = Tabooword[0]
         doc_cli.accept_taboo_word(NewTabooword)
-        self.taboowordSearch = doc_cli.get_taboo_word
-        self.taboovar.set(self.taboowordSearch)
+        self.getTaboowords()
 
 
     def deleteTabooword(self):
         item = self.taboowordslist.curselection()
         idx = item[0]
-        Tabooword = self.applicationSearch[idx]
+        Tabooword = self.taboowordSearch[idx]
         DeletedTabooWord = Tabooword[0]
         doc_cli.delete_taboo_word(DeletedTabooWord)
-        self.taboowordSearch = doc_cli.get_taboo_word
-        self.taboovar.set(self.taboowordSearch)
+        self.getTaboowords()
 
 
     def quit(self):
