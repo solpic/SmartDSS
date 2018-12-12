@@ -21,8 +21,7 @@ superUser = user("SU")
 
 if __name__ == '__main__':
     from DocumentDB import doc_cli
-    # Document name, username, verison number
-    testDoc = doc_cli.get_document("Document name here", "me", 0)
+    testDoc = doc_cli.get_document("ASD", "me", 0)
     testScreen1 = DocumentFileTest.DocumentScreen(ordUser,testDoc)
     # testScreen2 = DocumentFileTest.DocumentScreen(ordUser,tmpSList)
     # testScreen3 = DocumentFileTest.DocumentScreen(superUser)
