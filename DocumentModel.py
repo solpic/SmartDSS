@@ -16,8 +16,8 @@ class DocumentModel():
         self.privacyLevel = privLevel
         self.createDate = datetime.datetime.now()
         self.versionDate = self.createDate
-        self.words=""
         self.memberList = [] #LIST OF ALL MEMBERS RELATED TO DOCUMENT
+        self.words=""
         self.locked = False
         self.deltaLog = []
         self.complaints = []
@@ -50,8 +50,11 @@ class DocumentModel():
 
     def addMember(self, member):
         from DocumentDB import doc_cli
-        if doc_cli.add_member(self.doc_id,member):
+        print("doc_id:  {}   memeber:   {}".format(self.doc_id,member))
+
+        if doc_cli.add_member(self.doc_id,member[0]):
             self.memberList.append(member)
+
 
     def removeMember(self,member):
         from DocumentDB import doc_cli
@@ -84,6 +87,8 @@ class DocumentModel():
         return self.complaints
 
     def generateDeltas(self,old,new):
+
+        # print("Old: "+old)
         #old is the old document words
         #new is the current docment words
         tmpDeltaLog = []

@@ -18,6 +18,7 @@ class DocumentScreen:
         self.currentDoc= document
         # self.docMembers = document.getMembers()
         self.allUsers = doc_cli.get_all_users() #TODO: Server Call
+        self.allMembers = doc_cli.get_members(self.currentDoc.doc_id)
         #self.allUsers = ["ARI","ME","JAS"]
         
         
@@ -40,7 +41,7 @@ class DocumentScreen:
 
         self.root= Tk()
         #root.title(self.currentDoc.getTitle() +" || "+ self.currentUser.getUserName())
-        self.root.title("Document Screen")
+        self.root.title(self.currentDoc.docName)
         self.root.geometry(str(DocHeight)+"x"+str(DocHeight))
         
         # --Menu Set Up -------------------------------------------------------------------------
@@ -96,7 +97,7 @@ class DocumentScreen:
         self.allUserMenu = Menu(self.updateMembersMenu) #For Removing Members
         self.allMembersMenu.add_command(label="All Members Menu")
 
-        for member in self.allUsers:
+        for member in self.allMembers:
             self.allMembersMenu.add_command(label=member,command=lambda i= member: self.removeUser(i))
         self.allUserMenu = Menu(self.updateMembersMenu)
         self.allUserMenu.add_command(label="All Users Menu")
@@ -184,13 +185,17 @@ class DocumentScreen:
         self.txt.insert(END,self.currentDoc.words)
     def addUser(self,user):
         print("Add User To Document Function")
+        print(user)
+        print("SHOOOOOOOULD BE USER STRING:  " + user[0])
+        #print("TYYYYYYYYYYYYYPE:   "+ str(type(user[0])))
         self.currentDoc.addMember(user)
-        self.allMembersMenu.add_command(label=user, command=lambda i= user: self.removeUser(i))
+        self.allMembersMenu.add_command(label=user, command=lambda i= user[0]: self.removeUser(i))
 
     def removeUser(self,uname):
        
         print("Remove User Function , uname: {}".format(uname))
         off = "disabled"
+        self.currentDoc.removeMember(uname)
         self.allMembersMenu.entryconfigure(uname,state=off)
     #PostCond: The inputed Word is added to the DB of Taboo Words
     def addTabooWord(self):
