@@ -96,7 +96,7 @@ class DocumentDBServer():
         self.c.execute('SELECT * FROM users WHERE username= ? ', user)
         return True
 
-    def setUser(self):
+    def setUser(self, username):
         user = (username,)
         self.c.execute('UPDATE users SET type = "OU" WHERE username= ? ', user)
         self.conn.commit()
@@ -469,7 +469,7 @@ doc_cli = DocumentDBClient()
 
 
 def main():
-    get_proxy().create_tables()
+    #get_proxy().create_tables()
     doc_cli.createUSer("me", "me", "me", "me", "python", "audio", "math", 1, "SU")
 
 if __name__ == '__main__':

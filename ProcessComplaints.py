@@ -41,7 +41,7 @@ class ProcessComplaints():
         self.complaintsSearch = doc_cli.get_complaints()
         for entry in self.complaintsSearch:
             print("PM entry", entry)
-        self.compvar.set(self.complaintsSearchSearch)
+        self.compvar.set(self.complaintsSearch)
 
     def deleteComplaint(self):
         item = self.curselection()
