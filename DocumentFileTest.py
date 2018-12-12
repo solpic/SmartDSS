@@ -70,7 +70,7 @@ class DocumentScreen:
         self.allUserMenu = Menu(self.updateMembersMenu)
         # allMembersMenu.add_command(label="xyz")
         for member in self.currentDoc.getMembers():
-            allMembersMenu.add_command(label=member.getUserName())
+            self.allMembersMenu.add_command(label=member.getUserName())
         self.updateMembersMenu.add_cascade(label="Remove User", menu=self.allMembersMenu)
         allUserMenu = Menu(self.updateMembersMenu)
         for user in self.allUsers:

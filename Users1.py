@@ -100,3 +100,10 @@ class Users():
         Interest3 = self.c.fetchone()[0]
         print(Interest3)
         return Interest3
+
+    def getMemberAppl(self):
+        type = ("GU",)
+        self.membershipList = self.c.execute('SELECT username, FName, LName, Interest1, Interest2, Interest3, type FROM t WHERE type = ?', type).fetchall()
+        for entry in self.membershipList:
+            print(entry)
+        return self.membershipList
