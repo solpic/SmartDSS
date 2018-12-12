@@ -77,7 +77,7 @@ class DocumentScreen:
         # self.updateMembersMenu.add_cascade(label="Remove User", menu=self.allMembersMenu)
         self.allUserMenu = Menu(self.updateMembersMenu)
         for user in self.allUsers:
-            self.allUserMenu.add_command(label=user)
+            self.allUserMenu.add_command(label=user,command=lambda j = user: self.addUser(j))
         self.updateMembersMenu.add_cascade(label="Remove Member", menu=self.allMembersMenu)
         self.updateMembersMenu.add_cascade(label="All Registered System Users",menu=self.allUserMenu)
         membOptMenu.add_cascade(label="View All Members", menu=self.allMembersMenu)
@@ -152,9 +152,9 @@ class DocumentScreen:
     def refreshText(self):
         self.txt.delete(1.0,END)
         self.txt.insert(END,self.currentDoc.words)
-    def addUser(self):
+    def addUser(self,user):
         print("Add User Function")
-        self.updateMembersMenu
+        self.currentDoc.memberList.append(user)
     def removeUser(self,uname):
         from DocumentDB import doc_cli
 
