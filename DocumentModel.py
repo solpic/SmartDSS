@@ -1,6 +1,7 @@
 import datetime
 import Complaint
 import DeltaObjects
+import TabooWords
 from DocumentDB import doc_cli
 
 #TODO: Add Server Update code as well
@@ -83,6 +84,7 @@ class DocumentModel():
         return self.complaints
 
     def generateDeltas(self,old,new):
+
         print("Old: "+old)
         #old is the old document words
         #new is the current docment words

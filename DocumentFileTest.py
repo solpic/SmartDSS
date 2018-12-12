@@ -42,7 +42,7 @@ class DocumentScreen:
 
         # Complain Menu
         complainMenu = Menu(self.mainMenu)
-        complainMenu.add_command(label="Submit Document Complaint",command=self.addDocComplaint)
+        # complainMenu.add_command(label="Submit Document Complaint",command=self.addDocComplaint)
         complainMenu.add_command(label="Submit User Complaint",command=self.addUserComplaint)
         self.mainMenu.add_cascade(label="Complaints",menu=complainMenu)
         # complainMenu.entryconfigure("Submit Document Complaint",state="disabled")
@@ -62,13 +62,13 @@ class DocumentScreen:
             self.pastVerMenu.add_command(label = delta.show() + "NUM: " + str(num) )
             num+=1
         #optMenu.add_command(label="Set Privacy Level")
-        privMenu = Menu(optMenu)
-        privMenu .add_command(label="Current Privacy Level: "+ self.currentDoc.privacyLevel)
-        privMenu.add_command(label="Set Private",command=lambda i= "private" :self.currentDoc.setPriv(i))
-        privMenu.add_command(label="Set Public",command=lambda i = "public" : self.currentDoc.setPriv(i))
-        privMenu.add_command(label="Set Shared", command=lambda i= "shared" : self.current.setPriv(i))
-        privMenu.add_command(label= "Set Restricted",command=lambda i ="restricted" : self.current.setPriv(i))
-        optMenu.add_cascade(label="Set Privacy Level",menu=privMenu)
+        self.privMenu = Menu(optMenu)
+        self.privMenu .add_command(label="Current Privacy Level: "+ self.currentDoc.privacyLevel)
+        self.privMenu.add_command(label="Set Private",command=lambda i= "private" :self.setPriv(i))
+        self.privMenu.add_command(label="Set Public",command=lambda i = "public" : self.setPriv(i))
+        self.privMenu.add_command(label="Set Shared", command=lambda i= "shared" : self.setPriv(i))
+        self.privMenu.add_command(label= "Set Restricted",command=lambda i ="restricted" : self.setPriv(i))
+        optMenu.add_cascade(label="Set Privacy Level",menu=self.privMenu)
         optMenu.add_cascade(label="Load Past Versions", menu=self.pastVerMenu)#command = ???? Something to view previous docs
         
         self.mainMenu.add_cascade(label="Document Options", menu=optMenu)
@@ -165,6 +165,9 @@ class DocumentScreen:
         self.root.mainloop()
 #--- END MAKE SCREEN ------------------------------
 
+    def setPriv(self,p):
+        self.privMenu.entryconfigure("Current Privacy Level: "+ self.currentDoc.privacyLevel,label="Current Privacy Level: " + p)
+        self.currentDoc.setPriv(p)
     def refreshText(self):
         self.txt.delete(1.0,END)
         self.txt.insert(END,self.currentDoc.words)
@@ -178,22 +181,6 @@ class DocumentScreen:
         print("Remove User Function , uname: {}".format(uname))
         off = "disabled"
         self.allMembersMenu.entryconfigure(uname,state=off)
-        '''
-        x=0
-        
-        mem = self.currentDoc.getMembers()
-        delmem=""
-        for i in range(0,len(mem)):
-            if (mem[i]==uname):
-                x=i
-                delmem = mem[i]
-                break
-
-
-        self.allMembersMenu.delete(x)
-        self.allUserMenu.destroy
-        self.currentDoc.removeMember(delmem)
-        '''
     #PostCond: The inputed Word is added to the DB of Taboo Words
     def addTabooWord(self):
         from DocumentDB import doc_cli
@@ -242,6 +229,15 @@ class DocumentScreen:
     def submitChanges(self):
         from DocumentDB import doc_cli
         old = self.currentDoc.getWords()
+        dirty = old
+        clean  = ""
+        for tw in TabooWords.TabooWord.getAllTaboo():
+            dirty = dirty.replace(tw.text,"UNK")
+        clean = dirty
+        print("CLEAN: "+clean)
+        old = clean
+        self.currentDoc.words=clean
+        self.refreshText()
         print("OLD: "+old)
         new = self.txt.get("1.0",'end-1c')
         deltas = self.currentDoc.generateDeltas(old,new)
