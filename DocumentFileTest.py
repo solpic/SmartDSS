@@ -28,7 +28,7 @@ class DocumentScreen:
 
         self.root= Tk()
         #root.title(self.currentDoc.getTitle() +" || "+ self.currentUser.getUserName())
-        self.root.title("Document Screen")
+        self.root.title(self.currentDoc.docName)
         self.root.geometry(str(DocHeight)+"x"+str(DocHeight))
         
         # --Menu Set Up -------------------------------------------------------------------------

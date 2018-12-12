@@ -16,8 +16,8 @@ class DocumentModel():
         self.privacyLevel = privLevel
         self.createDate = datetime.datetime.now()
         self.versionDate = self.createDate
-        self.words=""
         self.memberList = [] #LIST OF ALL MEMBERS RELATED TO DOCUMENT
+        self.words=""
         self.locked = False
         self.deltaLog = []
         self.complaints = []
