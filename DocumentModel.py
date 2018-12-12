@@ -70,6 +70,10 @@ class DocumentModel():
         return self.words
     
     def getComplaints(self):
+        # return self.complaints
+        #TODO: doc_cli not returing?
+        from DocumentDB import doc_cli
+        doc_cli.get_complaints()
         return self.complaints
 
     def generateDeltas(self,old,new):
@@ -163,6 +167,28 @@ class DocumentModel():
         #print("OLD: {} NEW: {}".format(tmpStringOld,self.words))
         #print("\n\n")
 
+    #  Num should be how many delta functions you want to apply to the null string
+    #  to get to the desired document
+
+    def sRec(self,num,dLog):
+        print("SPECIAL RECONSTRUCTION:: Num: {} dLog {}  objDeltaLog{}".format(num,dLog,self.deltaLog))
+        #TODO: dLog is empty, as is deltaLog
+        count = 0
+        tmpStringOld = self.words
+        self.words=""
+        for delta in dLog:
+            tmpString = self.words
+            if(count>num):
+                break
+            if (isinstance(delta,DeltaObjects.Insert)):
+                backHalf = tmpString[0:delta.location]
+                frontHalf = tmpString[delta.location:]
+                self.words = backHalf + delta.string + frontHalf
+            if(isinstance(delta,DeltaObjects.Delete)):
+                backHalf = tmpString[0:delta.location]
+                frontHalf = tmpString[(delta.location+delta.length):]
+                self.words = backHalf+frontHalf
+            count+=1
                 
 
 

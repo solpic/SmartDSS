@@ -9,6 +9,7 @@ class Insert():
         
     def show(self):
         print("ID: "+str(self.u_id)+"Insert: "+self.string+", at "+str(self.location))
+        return "ID: "+str(self.u_id)+"Insert: "+self.string+", at "+str(self.location)
 
 
 class Delete():
@@ -20,3 +21,4 @@ class Delete():
         
     def show(self):
         print("ID: "+str(self.u_id)+"Delete: "+str(self.length)+", at "+str(self.location))
+        return "ID: "+str(self.u_id)+"Delete: "+str(self.length)+", at "+str(self.location)
